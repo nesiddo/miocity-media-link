@@ -1,0 +1,11 @@
+**/bin/
+**/obj/
+**/*.msix
+**/*.msixbundle
+**/*.cer
+**/*.pfx
+**/*.pvk
+publish/
+*.zip
+.vs/
+*.user

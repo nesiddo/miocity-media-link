@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap10="http://schemas.microsoft.com/appx/manifest/uap/windows10/10"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap uap10 desktop rescap">
+  <!-- Replace Publisher with the subject of the signing certificate before packaging. -->
+  <Identity Name="MioCity.LocalMediaBridge" Publisher="CN=MioCity" Version="1.3.0.0" />
+  <Properties>
+    <DisplayName>MioCity Media Link</DisplayName>
+    <PublisherDisplayName>MioCity</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19041.0" MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+  <Resources>
+    <Resource Language="ja-jp" />
+  </Resources>
+  <Applications>
+    <Application Id="App" Executable="LocalMediaBridge.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements DisplayName="MioCity Media Link" Description="MioCity専用メディア・セカンドスクリーン連携ツール - Created by nesiddo" BackgroundColor="transparent" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" />
+      <Extensions>
+        <desktop:Extension
+          Category="windows.startupTask"
+          Executable="LocalMediaBridge.exe"
+          EntryPoint="Windows.FullTrustApplication"
+          uap10:Parameters="--startup">
+          <desktop:StartupTask
+            TaskId="MioCityLocalMediaBridgeStartup"
+            Enabled="false"
+            DisplayName="MioCity Media Link" />
+        </desktop:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+  <Capabilities>
+    <rescap:Capability Name="globalMediaControl" />
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+</Package>

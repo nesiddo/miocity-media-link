@@ -1,0 +1,61 @@
+# MioCity Media Link
+
+FiveM サーバー **MioCity** 専用の Windows 補助アプリです。Windows で再生中のメディア（曲名・アーティスト・ジャケット・再生位置）と、任意で音声の波形を、同じ PC 上のゲーム内 UI（ZSX_UIV2 / mio_ui）に表示します。セカンドモニター用の読み取り専用マップも表示できます。
+
+Created by nesiddo
+
+## できること
+
+- 再生中メディアの表示と、再生／一時停止・前へ・次へ（Windows のメディア操作 SMTC を使用）
+- 音声ビジュアライザー（既定 OFF）
+- セカンドモニター／別ウィンドウ用の読み取り専用マップ（現在地・向き・ブリップ・ウェイポイント。既定 OFF）
+
+特定の音楽サービスへのログインや API キーは不要です。SMTC に対応したアプリ（ブラウザ、Spotify デスクトップ版など）の再生情報を表示します。
+
+## プライバシーとセキュリティ
+
+- 待ち受けは `127.0.0.1:18765` のみ。LAN・インターネットには公開しません（ポート開放も不要です）
+- 接続を受け付けるのは FiveM のゲーム内 UI（Origin `https://cfx-nui-*`）だけ。初回に `https://cfx-nui-zsx_uiv2` へだけ 32 バイトのランダムな接続キーを自動で渡し、以後はそのキーで認証します
+- 接続キーとマップ閲覧キーは各 PC の `%LOCALAPPDATA%\MioCity\LocalMediaBridge\settings.json` にだけ保存されます
+- 曲・音声・位置の情報は MioCity のサーバーへ送りません
+- FiveM / GTA V のプロセス、メモリ、ゲームファイル、通信には一切アクセスしません
+- 波形は ON の間だけ、既定の出力デバイスの音をメモリ上で表示用の強さに変換します。音声そのものは保存・送信しません
+- 外部マップの背景は `assets.loaf-scripts.com` の地図タイルを読み込みます（ON のときだけ。配信元にはその PC の IP アドレスと表示中のタイル番号が伝わります）。ブリップのアイコンは初回だけ `docs.fivem.net` から取得して PC に保存します
+
+## 使い方（ベータ版・zip 配布）
+
+1. [Releases](../../releases) から `MioCity-Media-Link-<バージョン>-win-x64.zip` をダウンロードし、展開します
+2. `MioCityMediaLink.exe` を起動します
+   - 署名のないベータ版のため、初回は「Windows によって PC が保護されました」と表示されます。「詳細情報」→「実行」で起動できます
+   - 心配な場合は、Releases に書かれた SHA-256 と、ダウンロードしたファイルのハッシュが一致するか確認してください（PowerShell: `Get-FileHash .\ファイル名.zip`）
+3. 起動したまま FiveM で MioCity に接続します。接続は自動です
+   - mio_ui：`/hudsettings` →「Media Link」
+   - ZSX_UIV2：F9 → Misc →「MioCity Media Link」
+4. 「プレイヤーを表示」を ON にすると、再生中の曲が HUD に出ます
+
+zip 版は Windows 起動時の自動起動に対応していません（MSIX 版のみ）。遊ぶ前に毎回起動してください。
+
+動作環境: Windows 10 2004 以降 / Windows 11（x64）。.NET のインストールは不要です（同梱）。
+
+## ビルド
+
+.NET 8 SDK が必要です。
+
+```powershell
+# 確認用ビルド
+dotnet build .\LocalMediaBridge\LocalMediaBridge.csproj -c Release
+
+# 配布用（.NET 同梱の単一 exe）
+dotnet publish .\LocalMediaBridge\LocalMediaBridge.csproj -c Release -r win-x64 --self-contained true `
+  -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -p:DebugType=none -o publish
+```
+
+`EnableWindowsTargeting` を有効にしてあるため、Linux / macOS の .NET 8 SDK からも同じコマンドで Windows 用 exe を作れます。
+
+### MSIX（正式版向け）
+
+`LocalMediaBridge.Package.wapproj` を Visual Studio 2022（Windows application development ワークロード）で開き、`Release / x64` でパッケージを作成します。署名前に `Package.appxmanifest` の `Publisher` を署名証明書の Subject に合わせてください。`globalMediaControl` と `runFullTrust` の capability は削除しないでください。
+
+## ライセンス
+
+[MIT License](LICENSE)。同梱・利用しているサードパーティのソフトウェアについては [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) を参照してください。

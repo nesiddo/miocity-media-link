@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Product>MioCity Media Link</Product>
+    <Title>MioCity Media Link</Title>
+    <Version>1.3.0</Version>
+    <FileVersion>1.3.0.0</FileVersion>
+    <Authors>nesiddo</Authors>
+    <Company>MioCity</Company>
+    <Copyright>© 2026 nesiddo</Copyright>
+    <Description>MioCity専用メディア・セカンドスクリーン連携ツール</Description>
+    <ProjectGuid>{B88F84D1-6B69-4A23-BF62-CB08A0C8B6B1}</ProjectGuid>
+    <!-- Players do not have the .NET 8 Desktop / ASP.NET Core runtimes
+         installed. Any RID-specific build (the MSIX packaging project, or
+         dotnet publish -r win-x64) therefore bundles the runtime. A plain
+         `dotnet build` without a RID stays framework-dependent for quick checks. -->
+    <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
+    <SelfContained Condition="'$(RuntimeIdentifier)' != ''">true</SelfContained>
+    <SatelliteResourceLanguages>ja</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <!-- Only WASAPI loopback + NAudio.Dsp are used; skip ASIO/MIDI/WinMM/WinForms. -->
+    <PackageReference Include="NAudio.Wasapi" Version="2.4.0" />
+  </ItemGroup>
+</Project>
