@@ -22,20 +22,34 @@ Created by nesiddo
 - 波形は ON の間だけ、既定の出力デバイスの音をメモリ上で表示用の強さに変換します。音声そのものは保存・送信しません
 - 外部マップの背景は `assets.loaf-scripts.com` の地図タイルを読み込みます（ON のときだけ。配信元にはその PC の IP アドレスと表示中のタイル番号が伝わります）。ブリップのアイコンは初回だけ `docs.fivem.net` から取得して PC に保存します
 
-## 使い方（ベータ版・zip 配布）
+## インストール（ベータ版）
 
-1. [Releases](../../releases) から `MioCity-Media-Link-<バージョン>-win-x64.zip` をダウンロードし、展開します
-2. `MioCityMediaLink.exe` を起動します
-   - 署名のないベータ版のため、初回は「Windows によって PC が保護されました」と表示されます。「詳細情報」→「実行」で起動できます
-   - 心配な場合は、Releases に書かれた SHA-256 と、ダウンロードしたファイルのハッシュが一致するか確認してください（PowerShell: `Get-FileHash .\ファイル名.zip`）
-3. 起動したまま FiveM で MioCity に接続します。接続は自動です
+[Releases](../../releases) から次のどちらかをダウンロードします。
+
+**インストーラー（おすすめ）: `MioCity-Media-Link-<バージョン>-Setup.exe`**
+
+1. ダウンロードした Setup.exe を実行します
+   - 署名のないベータ版のため、「Windows によって PC が保護されました」と表示されます。「詳細情報」→「実行」で進めます
+   - 管理者権限は不要です（このユーザーだけにインストールします。場所: `%LOCALAPPDATA%\Programs\MioCity Media Link`）
+2. 「Windows の起動時に自動で起動する」は、ON にすると PC 起動時に通知領域（画面右下）で待機します
+3. スタートメニューの「MioCity Media Link」から起動できます。削除は「設定 → アプリ → インストールされているアプリ」から
+
+**zip 版: `MioCity-Media-Link-<バージョン>-win-x64.zip`**（インストールしたくない場合）
+
+展開して `MioCityMediaLink.exe` を起動します。自動起動はアプリ画面の「Windows起動時」ボタンで切り替えられます（exe を移動したら設定し直してください）。
+
+ダウンロードしたファイルは、Releases に書かれた SHA-256 と一致するか確認できます（PowerShell: `Get-FileHash .\ファイル名`）。
+
+## 使い方
+
+1. アプリを起動したまま FiveM で MioCity に接続します。接続は自動です（キーの入力は不要）
    - mio_ui：`/hudsettings` →「Media Link」
    - ZSX_UIV2：F9 → Misc →「MioCity Media Link」
-4. 「プレイヤーを表示」を ON にすると、再生中の曲が HUD に出ます
-
-zip 版は Windows 起動時の自動起動に対応していません（MSIX 版のみ）。遊ぶ前に毎回起動してください。
+2. 「プレイヤーを表示」を ON にすると、再生中の曲が HUD に出ます
+3. 波形・セカンドモニター用マップも同じ画面で ON にできます
 
 動作環境: Windows 10 2004 以降 / Windows 11（x64）。.NET のインストールは不要です（同梱）。
+設定と接続キーは `%LOCALAPPDATA%\MioCity\LocalMediaBridge` に保存され、アンインストールしても残ります（再インストール時に接続し直さなくて済むように）。不要ならフォルダごと削除してください。
 
 ## ビルド
 
@@ -51,6 +65,15 @@ dotnet publish .\LocalMediaBridge\LocalMediaBridge.csproj -c Release -r win-x64 
 ```
 
 `EnableWindowsTargeting` を有効にしてあるため、Linux / macOS の .NET 8 SDK からも同じコマンドで Windows 用 exe を作れます。
+
+### インストーラー
+
+[NSIS](https://nsis.sourceforge.io/) 3 で作ります（Windows / Linux どちらでも可）。上の `publish` の exe を `MioCityMediaLink.exe` という名前で置いたフォルダを `SOURCE` に指定します。
+
+```bash
+cd installer
+makensis -DVERSION=1.3.1 -DSOURCE=../stage MioCityMediaLink.nsi
+```
 
 ### MSIX（正式版向け）
 

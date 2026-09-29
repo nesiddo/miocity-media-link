@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Runtime.InteropServices;
+using Microsoft.Win32;
 using Windows.ApplicationModel;
 
 namespace MioCity.LocalMediaBridge;
@@ -13,6 +14,10 @@ namespace MioCity.LocalMediaBridge;
 public sealed class BridgeForm : Form
 {
     private const string StartupTaskId = "MioCityLocalMediaBridgeStartup";
+    // Installer / zip build (no package identity): the per-user Run key. The installer writes the same value.
+    private const string RunKeyPath = @"Software\Microsoft\Windows\CurrentVersion\Run";
+    private const string RunValueName = "MioCityMediaLink";
+    private const string StartupApprovedPath = @"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run";
     private static readonly Color WindowBackground = Color.FromArgb(242, 247, 250);
     private static readonly Color CardBackground = Color.White;
     private static readonly Color BrandColor = Color.FromArgb(14, 169, 205);
@@ -318,12 +323,44 @@ public sealed class BridgeForm : Form
         if (_bridgeStatus.Text != text) _bridgeStatus.Text = text;
     }
 
+    private enum RunState { Off, On, DisabledInSettings }
+
+    private static string RunCommand() => $"\"{Environment.ProcessPath}\" --startup";
+
+    /// <summary>autostart through HKCU\...\Run (installer / zip build)</summary>
+    private static RunState ReadRunState()
+    {
+        using var run = Registry.CurrentUser.OpenSubKey(RunKeyPath);
+        var value = run?.GetValue(RunValueName) as string;
+        // an entry left by a copy elsewhere (moved zip) does not start this exe
+        if (value is null || !string.Equals(value.Trim(), RunCommand(), StringComparison.OrdinalIgnoreCase)) return RunState.Off;
+        // switched off in Settings > Apps > Startup / Task Manager: odd first byte in StartupApproved
+        using var approved = Registry.CurrentUser.OpenSubKey(StartupApprovedPath);
+        if (approved?.GetValue(RunValueName) is byte[] flags && flags.Length > 0 && (flags[0] & 1) == 1) return RunState.DisabledInSettings;
+        return RunState.On;
+    }
+
     private async Task RefreshStartupButtonAsync()
     {
         if (!HasPackageIdentity())
         {
-            _startupButton.Text = "自動起動はMSIX版のみ";
-            _startupButton.Enabled = false;
+            try
+            {
+                _startupButton.Enabled = true;
+                _startupButton.Text = ReadRunState() switch
+                {
+                    RunState.On => "Windows起動時: ON",
+                    RunState.DisabledInSettings => "Windows起動時: OFF（設定を開く）",
+                    _ => "Windows起動時: OFF",
+                };
+            }
+            catch (Exception exception)
+            {
+                _startupButton.Text = "自動起動を利用できません";
+                _startupButton.Enabled = false;
+                _startupNote = "自動起動: " + exception.Message;
+                RefreshBridgeStatus();
+            }
             return;
         }
 
@@ -352,7 +389,30 @@ public sealed class BridgeForm : Form
 
     private async void ToggleStartupAsync(object? sender, EventArgs args)
     {
-        if (_startupTask is null || _closing) return;
+        if (_closing) return;
+        if (!HasPackageIdentity())
+        {
+            try
+            {
+                var state = ReadRunState();
+                if (state == RunState.DisabledInSettings)
+                    Process.Start(new ProcessStartInfo("ms-settings:startupapps") { UseShellExecute = true });
+                else
+                {
+                    using var run = Registry.CurrentUser.CreateSubKey(RunKeyPath);
+                    if (state == RunState.On) run.DeleteValue(RunValueName, false);
+                    else run.SetValue(RunValueName, RunCommand(), RegistryValueKind.String);
+                }
+            }
+            catch (Exception exception)
+            {
+                _startupNote = "自動起動の変更に失敗しました: " + exception.Message;
+                RefreshBridgeStatus();
+            }
+            await RefreshStartupButtonAsync();
+            return;
+        }
+        if (_startupTask is null) return;
         _startupButton.Enabled = false;
         try
         {

@@ -10,8 +10,8 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Product>MioCity Media Link</Product>
     <Title>MioCity Media Link</Title>
-    <Version>1.3.0</Version>
-    <FileVersion>1.3.0.0</FileVersion>
+    <Version>1.3.1</Version>
+    <FileVersion>1.3.1.0</FileVersion>
     <Authors>nesiddo</Authors>
     <Company>MioCity</Company>
     <Copyright>© 2026 nesiddo</Copyright>

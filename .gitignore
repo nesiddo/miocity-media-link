@@ -9,3 +9,5 @@ publish/
 *.zip
 .vs/
 *.user
+installer/*.exe
+stage/
