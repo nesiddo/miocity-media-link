@@ -7,7 +7,7 @@
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   IgnorableNamespaces="uap uap10 desktop rescap">
   <!-- Replace Publisher with the subject of the signing certificate before packaging. -->
-  <Identity Name="MioCity.LocalMediaBridge" Publisher="CN=MioCity" Version="1.4.1.0" />
+  <Identity Name="MioCity.LocalMediaBridge" Publisher="CN=MioCity" Version="1.5.0.0" />
   <Properties>
     <DisplayName>MioCity Media Link</DisplayName>
     <PublisherDisplayName>MioCity</PublisherDisplayName>
