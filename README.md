@@ -11,9 +11,9 @@ Created by nesiddo
 - セカンドモニター／別ウィンドウ用のマップ（現在地・向き・ブリップ・ウェイポイント。既定 OFF）
   - 右クリックでウェイポイントの設定・解除（ゲーム内のマップと同じ操作だけ。サーバーが許可している場合）
   - 自分用のピンとメモ（マップを開いているブラウザにだけ保存）
-  - アイコンの種類ごとの表示切り替え
+  - 地図のアイコンは種類を選んで表示（初期状態はすべて非表示）
   - 番地入りの地図（サーバーが配信している場合）と現在の番地
-  - 勤務中の公務員向けに、同じ職業のメンバーと通報の表示（サーバー側の対応が必要）
+  - 勤務中の公務員向けに、同じ職業のメンバーと通報の一覧（カーソルを合わせると詳細。サーバー側の対応が必要）
 
 特定の音楽サービスへのログインや API キーは不要です。SMTC に対応したアプリ（ブラウザ、Spotify デスクトップ版など）の再生情報を表示します。
 
@@ -79,7 +79,7 @@ dotnet publish .\LocalMediaBridge\LocalMediaBridge.csproj -c Release -r win-x64 
 
 ```bash
 cd installer
-makensis -DVERSION=1.4.0 -DSOURCE=../stage MioCityMediaLink.nsi
+makensis -DVERSION=1.4.1 -DSOURCE=../stage MioCityMediaLink.nsi
 ```
 
 ### MSIX（正式版向け）
