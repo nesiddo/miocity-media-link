@@ -184,6 +184,9 @@ public static class BlipIcons
 
     public static bool IsKnown(int sprite) => Names.ContainsKey(sprite);
 
+    /// <summary>sprite id -> reference name (for the map's icon filter)</summary>
+    public static IReadOnlyDictionary<int, string> AllNames => Names;
+
     public static async Task<byte[]?> GetAsync(int sprite, CancellationToken cancellationToken)
     {
         if (!Names.TryGetValue(sprite, out var name)) return null;

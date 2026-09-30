@@ -49,6 +49,14 @@ public sealed class BridgeRuntime : IAsyncDisposable
     private CompanionMapState _mapState = CompanionMapState.Empty;
     private const int MaximumBlips = 500;
     private object _mapBlips = new { blips = Array.Empty<double[]>() };
+    // app 1.4.0: what the game lets the map offer, public-service members and dispatch calls (on-duty police / EMS)
+    private const int MaximumUnits = 150;
+    private const int MaximumAlerts = 20;
+    private const int MaximumViewerMessageBytes = 1024;
+    private static readonly TimeSpan ViewerCommandInterval = TimeSpan.FromMilliseconds(300);
+    private CompanionMapConfig _mapConfig = CompanionMapConfig.Empty;
+    private object _mapUnits = new { units = Array.Empty<object[]>() };
+    private object _mapAlerts = new { alerts = Array.Empty<CompanionMapAlert>() };
 
     public BridgeRuntime(BridgeSettings settings)
     {
@@ -101,9 +109,10 @@ public sealed class BridgeRuntime : IAsyncDisposable
         });
         app.UseWebSockets(new WebSocketOptions { KeepAliveInterval = TimeSpan.FromSeconds(20) });
         app.MapGet("/", () => Results.Content(CreateLandingPage(), "text/html; charset=utf-8"));
-        app.MapGet("/health", () => Results.Json(new { running = true, protocol = 1 }));
+        app.MapGet("/health", () => Results.Json(new { running = true, protocol = 1, map = 2 }));
         app.MapGet("/map", HandleMapPage);
         app.MapGet("/blip/{sprite:int}.png", HandleBlipIconAsync);
+        app.MapGet("/blip/names.json", HandleBlipNames);
         app.Map("/map-view", HandleMapViewerAsync);
         app.Map("/bridge", HandleBridgeAsync);
 
@@ -137,6 +146,12 @@ public sealed class BridgeRuntime : IAsyncDisposable
         context.Response.Headers.CacheControl = "public, max-age=604800, immutable";
         context.Response.ContentType = "image/png";
         await context.Response.Body.WriteAsync(bytes, context.RequestAborted);
+    }
+
+    private static IResult HandleBlipNames(HttpContext context)
+    {
+        context.Response.Headers.CacheControl = "public, max-age=86400";
+        return Results.Json(BlipIcons.AllNames.ToDictionary(pair => pair.Key.ToString(System.Globalization.CultureInfo.InvariantCulture), pair => pair.Value));
     }
 
     private async Task HandleBridgeAsync(HttpContext context)
@@ -256,14 +271,27 @@ public sealed class BridgeRuntime : IAsyncDisposable
                 connected = !_clients.IsEmpty,
                 mapEnabled = _clients.Values.Any(client => client.MapEnabled),
             }, context.RequestAborted);
+            await SendAsync(viewer, "map.config", _mapConfig, context.RequestAborted);
             await SendAsync(viewer, "map.state", _mapState, context.RequestAborted);
             await SendAsync(viewer, "map.blips", _mapBlips, context.RequestAborted);
-            // The map is read-only: incoming frames are drained and ignored.
-            var buffer = new byte[256];
+            await SendAsync(viewer, "map.units", _mapUnits, context.RequestAborted);
+            await SendAsync(viewer, "map.alerts", _mapAlerts, context.RequestAborted);
+            // The map only reads, except two commands the pause map also offers: set / clear the waypoint. They are
+            // relayed to the game only when the game allows it (map.config waypoint) and at most ~3 per second.
+            var buffer = new byte[MaximumViewerMessageBytes];
+            var lastCommand = DateTimeOffset.MinValue;
             while (socket.State == WebSocketState.Open && !context.RequestAborted.IsCancellationRequested)
             {
-                var result = await socket.ReceiveAsync(buffer, context.RequestAborted);
-                if (result.MessageType == WebSocketMessageType.Close) break;
+                var message = await ReceiveEnvelopeAsync(socket, buffer, context.RequestAborted);
+                if (message is null)
+                {
+                    if (socket.State != WebSocketState.Open) break;
+                    continue;
+                }
+                var now = DateTimeOffset.UtcNow;
+                if (now - lastCommand < ViewerCommandInterval) continue;
+                lastCommand = now;
+                await HandleViewerMessageAsync(message);
             }
         }
         catch (OperationCanceledException) { }
@@ -274,6 +302,26 @@ public sealed class BridgeRuntime : IAsyncDisposable
             await BroadcastViewerCountAsync();
         }
     }
+
+    private async Task HandleViewerMessageAsync(ClientEnvelope message)
+    {
+        if (!_mapConfig.Waypoint) return;
+        object? command = message.Type switch
+        {
+            "map.waypoint" when ReadCoordinate(message.Data, "x", -5000, 6000) is { } x && ReadCoordinate(message.Data, "y", -5500, 9000) is { } y
+                => new { action = "waypoint", x = Math.Round(x, 1), y = Math.Round(y, 1) },
+            "map.clearWaypoint" => new { action = "clearWaypoint", x = 0, y = 0 },
+            _ => null,
+        };
+        if (command is null) return;
+        await BroadcastAsync(_clients.Values.Where(client => client.MapEnabled), "map.command", command);
+    }
+
+    private static double? ReadCoordinate(JsonElement data, string name, double min, double max)
+        => data.ValueKind == JsonValueKind.Object && data.TryGetProperty(name, out var value) &&
+           value.ValueKind == JsonValueKind.Number && value.TryGetDouble(out var number) && double.IsFinite(number) &&
+           number >= min && number <= max
+            ? number : null;
 
     private Task BroadcastViewerCountAsync()
         => BroadcastAsync(_clients.Values, "map.viewers", new { count = _mapViewers.Count });
@@ -339,6 +387,21 @@ public sealed class BridgeRuntime : IAsyncDisposable
                 _mapBlips = new { blips = ParseBlips(message.Data) };
                 if (!_mapViewers.IsEmpty) await BroadcastAsync(_mapViewers.Values, "map.blips", _mapBlips);
                 break;
+            case "map.config":
+                if (!client.MapEnabled) return;
+                _mapConfig = ParseMapConfig(message.Data);
+                if (!_mapViewers.IsEmpty) await BroadcastAsync(_mapViewers.Values, "map.config", _mapConfig);
+                break;
+            case "map.units":
+                if (!client.MapEnabled) return;
+                _mapUnits = new { units = ParseUnits(message.Data) };
+                if (!_mapViewers.IsEmpty) await BroadcastAsync(_mapViewers.Values, "map.units", _mapUnits);
+                break;
+            case "map.alerts":
+                if (!client.MapEnabled) return;
+                _mapAlerts = new { alerts = ParseAlerts(message.Data) };
+                if (!_mapViewers.IsEmpty) await BroadcastAsync(_mapViewers.Values, "map.alerts", _mapAlerts);
+                break;
         }
     }
 
@@ -379,7 +442,79 @@ public sealed class BridgeRuntime : IAsyncDisposable
         InVehicle: ReadBoolean(data, "inVehicle"),
         HasWaypoint: ReadBoolean(data, "hasWaypoint"),
         WaypointX: ReadDouble(data, "waypointX", -10000, 10000, 0),
-        WaypointY: ReadDouble(data, "waypointY", -10000, 10000, 0));
+        WaypointY: ReadDouble(data, "waypointY", -10000, 10000, 0),
+        Postal: PostalCode.IsMatch(ReadString(data, "postal", 8)) ? ReadString(data, "postal", 8) : string.Empty);
+
+    private static readonly Regex PostalCode = new(@"^[A-Za-z0-9-]{1,8}$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
+    /// <summary>The postal tile base must be a plain http(s) URL ending in "/" (no credentials, query or fragment).</summary>
+    private static CompanionMapConfig ParseMapConfig(JsonElement data)
+    {
+        var postal = ReadString(data, "postal", 300);
+        if (postal.Length > 0 &&
+            !(Uri.TryCreate(postal, UriKind.Absolute, out var uri) &&
+              (uri.Scheme == Uri.UriSchemeHttps || uri.Scheme == Uri.UriSchemeHttp) &&
+              string.IsNullOrEmpty(uri.UserInfo) && string.IsNullOrEmpty(uri.Query) && string.IsNullOrEmpty(uri.Fragment) &&
+              uri.AbsolutePath.EndsWith('/') && !postal.Contains('"') && !postal.Contains('\\')))
+            postal = string.Empty;
+        return new CompanionMapConfig(
+            Waypoint: ReadBoolean(data, "waypoint"),
+            Postal: postal,
+            PostalMax: ReadInteger(data, "postalMax", 2, 7, 6),
+            Services: ReadBoolean(data, "services"));
+    }
+
+    /// <summary>[[x, y, heading, kind, colour, name, group], ...] — numbers clamped, names cut, at most MaximumUnits</summary>
+    private static object[][] ParseUnits(JsonElement data)
+    {
+        if (data.ValueKind != JsonValueKind.Object || !data.TryGetProperty("units", out var list) || list.ValueKind != JsonValueKind.Array)
+            return Array.Empty<object[]>();
+        var result = new List<object[]>();
+        foreach (var item in list.EnumerateArray())
+        {
+            if (result.Count >= MaximumUnits) break;
+            if (item.ValueKind != JsonValueKind.Array || item.GetArrayLength() < 4) continue;
+            var values = item.EnumerateArray().ToArray();
+            double Num(int i, double min, double max) =>
+                i < values.Length && values[i].ValueKind == JsonValueKind.Number && values[i].TryGetDouble(out var n) && double.IsFinite(n)
+                    ? Math.Clamp(n, min, max) : 0;
+            string Str(int i, int max)
+            {
+                if (i >= values.Length || values[i].ValueKind != JsonValueKind.String) return string.Empty;
+                var text = (values[i].GetString() ?? string.Empty).Trim();
+                return text.Length > max ? text[..max] : text;
+            }
+            result.Add(new object[]
+            {
+                Math.Round(Num(0, -10000, 10000), 1), Math.Round(Num(1, -10000, 10000), 1), Math.Round(Num(2, 0, 360)),
+                Math.Round(Num(3, 0, 9)), Math.Round(Num(4, 0, 255)), Str(5, 40), Str(6, 16),
+            });
+        }
+        return result.ToArray();
+    }
+
+    private static CompanionMapAlert[] ParseAlerts(JsonElement data)
+    {
+        if (data.ValueKind != JsonValueKind.Object || !data.TryGetProperty("alerts", out var list) || list.ValueKind != JsonValueKind.Array)
+            return Array.Empty<CompanionMapAlert>();
+        var result = new List<CompanionMapAlert>();
+        foreach (var item in list.EnumerateArray())
+        {
+            if (result.Count >= MaximumAlerts) break;
+            if (item.ValueKind != JsonValueKind.Object) continue;
+            result.Add(new CompanionMapAlert(
+                Id: ReadInteger(item, "id", 0, int.MaxValue, 0),
+                X: Math.Round(ReadDouble(item, "x", -10000, 10000, 0), 1),
+                Y: Math.Round(ReadDouble(item, "y", -10000, 10000, 0), 1),
+                Code: ReadString(item, "code", 16),
+                Title: ReadString(item, "title", 80),
+                Text: ReadString(item, "text", 120),
+                Street: ReadString(item, "street", 80),
+                Priority: ReadInteger(item, "priority", 0, 9, 2),
+                At: (long)ReadDouble(item, "at", 0, 4102444800, 0)));
+        }
+        return result.ToArray();
+    }
 
     /// <summary>[[sprite, colour, x, y, rotation], ...] — only numbers, clamped, at most MaximumBlips entries</summary>
     private static double[][] ParseBlips(JsonElement data)

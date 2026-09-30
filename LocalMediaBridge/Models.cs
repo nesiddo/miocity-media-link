@@ -96,10 +96,20 @@ public sealed record CompanionMapState(
     bool InVehicle,
     bool HasWaypoint,
     double WaypointX,
-    double WaypointY)
+    double WaypointY,
+    string Postal)
 {
-    public static readonly CompanionMapState Empty = new(false, 0, 0, 0, 0, 0, string.Empty, string.Empty, string.Empty, false, false, 0, 0);
+    public static readonly CompanionMapState Empty = new(false, 0, 0, 0, 0, 0, string.Empty, string.Empty, string.Empty, false, false, 0, 0, string.Empty);
 }
+
+/// <summary>What the game lets the companion map offer (sent by the game UI, app 1.4.0+).</summary>
+public sealed record CompanionMapConfig(bool Waypoint, string Postal, int PostalMax, bool Services)
+{
+    public static readonly CompanionMapConfig Empty = new(false, string.Empty, 6, false);
+}
+
+/// <summary>A dispatch call shown on the companion map.</summary>
+public sealed record CompanionMapAlert(int Id, double X, double Y, string Code, string Title, string Text, string Street, int Priority, long At);
 
 public sealed class ClientEnvelope
 {
