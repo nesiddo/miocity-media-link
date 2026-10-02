@@ -39,7 +39,7 @@ public static class CompanionMapPage
 /* toolbar */
 .tools{position:absolute;z-index:10;right:18px;top:18px;display:flex;flex-direction:column;gap:8px}.tools .grp{display:flex;flex-direction:column;overflow:hidden;padding:0}
 .tools button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;width:58px;height:52px;border:0;border-bottom:1px solid #ffffff10;background:transparent;color:#cfe9f2;cursor:pointer}.tools button:last-child{border-bottom:0}.tools button[hidden]{display:none}
-.tools svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.tools button span{font-size:10.5px;font-weight:700;color:#9fb8c3}
+.tools svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.tools button span{font-size:10.5px;font-weight:700;color:#9fb8c3;white-space:nowrap}.tools button span.sm{font-size:9.5px;letter-spacing:-.03em}
 .tools button:hover{background:#ffffff12;color:#fff}.tools button:hover span{color:#fff}.tools button.active{background:var(--acc);color:#061018}.tools button.active span{color:#061018}
 .badge{position:absolute;right:7px;top:5px;min-width:17px;height:17px;padding:0 5px;border-radius:9px;background:var(--red);color:#fff;font-size:10.5px;font-style:normal;line-height:17px;font-weight:800}
 /* side panels */
@@ -62,8 +62,12 @@ input[type=checkbox]{accent-color:var(--acc);width:17px;height:17px;flex:none}
 .dialog{position:fixed;z-index:40;inset:0;display:none;place-items:center;background:#02070b99}.dialog.open{display:grid}.dialog form{width:min(360px,calc(100% - 40px));padding:20px;background:#0b1922;border:1px solid #ffffff1a;border-top:3px solid #ffcc4d;border-radius:10px;box-shadow:0 20px 60px #000}.dialog h3{margin:0 0 12px;font-size:15px}.dialog input[type=text]{width:100%;padding:9px 10px;border:1px solid #ffffff22;border-radius:7px;background:#06101a;outline:none}.dialog input[type=text]:focus{border-color:var(--acc)}.choices{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}.choices button{width:34px;height:34px;border:2px solid transparent;border-radius:7px;background:#ffffff0c;cursor:pointer;font-size:16px}.choices button.on{border-color:#fff}.dialog .actions{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}.dialog .actions button{padding:8px 14px;border:0;border-radius:7px;cursor:pointer}.dialog .actions .ok{background:var(--acc);color:#061018;font-weight:800}.dialog .actions .cancel{background:#ffffff14}
 .hint{position:absolute;z-index:11;left:50%;top:18px;transform:translateX(-50%);max-width:calc(100% - 200px);display:flex;align-items:center;gap:10px;padding:9px 10px 9px 16px;font-size:13px}.hint[hidden]{display:none}.hint button{white-space:nowrap;border:0;border-radius:6px;padding:5px 10px;background:#ffffff14;cursor:pointer;font-size:12px}.hint button:hover{background:var(--acc);color:#061018}
 .toast{position:fixed;z-index:50;left:50%;top:72px;transform:translateX(-50%);padding:10px 16px;background:#071018f4;border:1px solid #0dd4fc66;border-radius:10px;font-size:13px;box-shadow:0 10px 30px #000a;opacity:0;transition:opacity .2s;pointer-events:none}.toast.show{opacity:1}
+.prow .key{flex:none;width:20px;height:20px;display:grid;place-items:center;border-radius:5px;background:#ffffff10;color:#9fb8c3;font-size:11px;font-weight:800}.prow.on{background:#0dd4fc1c;box-shadow:inset 3px 0 0 var(--acc)}.prow.on .key{background:var(--acc);color:#061018}.prow{cursor:pointer}
+.range{display:flex;align-items:center;gap:12px}.range input{flex:1;accent-color:var(--acc)}.range b{min-width:44px;text-align:right;font-variant-numeric:tabular-nums;font-size:13px}
+.pill{position:absolute;z-index:10;left:18px;bottom:18px;display:flex;align-items:center;gap:8px;padding:8px 14px 8px 12px;border-radius:20px;cursor:pointer;font-size:13px;font-weight:700}.pill[hidden]{display:none}.pill:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--acc)}.pill:hover{border-color:var(--acc)}
+.dialog textarea{width:100%;height:160px;margin-top:10px;padding:9px 10px;border:1px solid #ffffff22;border-radius:7px;background:#06101a;outline:none;resize:vertical;font:12px/1.5 ui-monospace,Consolas,monospace;color:inherit}.dialog textarea:focus{border-color:var(--acc)}.dialog textarea[hidden],.dialog input[hidden]{display:none}.dialog .note{margin-top:8px;color:#7f98a3;font-size:12px;line-height:1.55}.dialog .note:empty{display:none}
 .disabled{position:absolute;z-index:20;inset:0;display:grid;place-items:center;background:#061018dd}.disabled[hidden]{display:none}.disabled div{max-width:540px;padding:28px;text-align:center;background:#0b1922;border:1px solid #ffffff16;border-top:3px solid var(--acc);border-radius:12px;box-shadow:0 20px 60px #000}.disabled h2{margin:0 0 10px;font-size:20px}.disabled p{margin:0;color:#94aab5;line-height:1.7}
-@media(max-width:650px){.hint{left:10px;right:80px;max-width:none;transform:none}.loc{left:10px;top:10px;max-width:calc(100% - 90px)}.loc .main{font-size:16px}.tools{right:10px;top:10px}.tools button{width:50px;height:46px}.side{right:70px;top:10px;width:calc(100% - 80px)}.alerts{right:10px;bottom:10px;width:calc(100% - 20px)}}
+@media(max-width:650px){.pill{left:10px;bottom:10px}.hint{left:10px;right:80px;max-width:none;transform:none}.loc{left:10px;top:10px;max-width:calc(100% - 90px)}.loc .main{font-size:16px}.tools{right:10px;top:10px}.tools button{width:50px;height:46px}.side{right:70px;top:10px;width:calc(100% - 80px)}.alerts{right:10px;bottom:10px;width:calc(100% - 20px)}}
 </style>
 </head>
 <body>
@@ -71,20 +75,25 @@ input[type=checkbox]{accent-color:var(--acc);width:17px;height:17px;flex:none}
 <section id="locCard" class="card loc" hidden><span id="conn" class="dot" title="Bridge へ接続中"></span><div><div id="location" class="main">FiveM を待っています</div><div id="sub" class="sub"><span id="zone">MioCity Media Link から現在地を受信します</span></div></div></section>
 <nav class="tools">
 <div class="grp card"><button id="follow" class="active" title="自分の位置に戻る"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/><path d="M12 1v3M12 20v3M1 12h3M20 12h3"/></svg><span>追従</span></button><button id="zoomIn" title="拡大（ホイール・ダブルクリックでも）"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>拡大</span></button><button id="zoomOut" title="縮小"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg><span>縮小</span></button></div>
-<div class="grp card"><button id="view" title="地図の種類・表示するもの"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 8l10 5 10-5z"/><path d="m2 13 10 5 10-5"/></svg><span>表示</span></button><button id="pinList" title="マイピン"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>ピン</span></button><button id="alertToggle" title="通報の一覧" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/></svg><span>通報</span><em id="alertBadge" class="badge" hidden></em></button></div>
+<div class="grp card"><button id="presetBtn" title="プリセットの切り替え（キーボードの 1〜9 でも）"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg><span class="sm">プリセット</span></button><button id="view" title="地図の種類・表示するもの"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 8l10 5 10-5z"/><path d="m2 13 10 5 10-5"/></svg><span>表示</span></button><button id="pinList" title="マイピン"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>ピン</span></button><button id="alertToggle" title="通報の一覧" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/></svg><span>通報</span><em id="alertBadge" class="badge" hidden></em></button></div>
 <div class="grp card"><button id="fullscreen" title="全画面"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>全画面</span></button></div>
 </nav>
 <aside id="viewPanel" class="side card">
 <section><h3>地図の種類</h3><div class="seg"><button data-layer="render">写真</button><button data-layer="game">ゲーム</button><button data-layer="print">白地図</button><button data-layer="postal" hidden>番地</button></div></section>
+<section><h3>アイコンの大きさ</h3><div class="range"><input id="iconSize" type="range" min="60" max="200" step="10"><b id="iconSizeVal"></b></div></section>
 <section><h3>地図に出すもの</h3><div id="layerToggles"></div></section>
 <section><h3>アイコンの種類</h3><div class="muted" style="margin-bottom:8px">チェックした種類だけ地図に出ます</div><input id="iconSearch" class="search" type="search" placeholder="種類を探す（例：病院）" autocomplete="off"><div class="btns"><button id="allOn">すべて表示</button><button id="allOff">すべて隠す</button></div><div id="spriteList"><div class="muted">アイコンを受信すると一覧が出ます</div></div></section>
 <div id="privacy" class="foot"></div>
 </aside>
-<aside id="pinPanel" class="side card"><h3>マイピン</h3><div class="muted" style="margin-bottom:10px">地図を右クリック →「ここにピンを置く」。このPCのブラウザにだけ保存されます。</div><div id="pinRows"></div></aside>
+<aside id="presetPanel" class="side card"><h3>プリセット</h3><div class="muted" style="margin-bottom:10px">マイピンと「表示」で選んだアイコンの種類をまとめて切り替えます。キーボードの 1〜9 でも切り替えられます。</div><div id="presetRows"></div><div class="btns" style="margin-top:10px"><button id="presetNew">新しく作る</button><button id="presetDup">今のを複製</button></div>
+<section><h3>共有・読み込み</h3><div class="muted" style="margin-bottom:8px">今のプリセットを文字にして人に渡せます。座標の一覧（1行に「x, y 名前」）からも作れます。</div><div class="btns"><button id="presetExport">書き出す</button><button id="presetImport">読み込む</button></div></section></aside>
+<aside id="pinPanel" class="side card"><h3>マイピン<span id="pinPreset" class="muted"></span></h3><div class="muted" style="margin-bottom:10px">地図を右クリック →「ここにピンを置く」。このPCのブラウザにだけ保存されます。</div><div id="pinRows"></div></aside>
 <section id="alerts" class="alerts card"><div class="ah">DISPATCH · 通報<span id="alertCount" class="n"></span><button id="alertClose" title="閉じる（「通報」でまた開けます）"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div id="alertRows"></div></section><div id="alertTip" class="alert-tip" hidden></div>
 <div id="hint" class="hint card" hidden><span>地図のアイコンは「表示」で種類を選ぶと出ます</span><button id="hintOpen">表示を開く</button><button id="hintClose">閉じる</button></div>
 <div id="menu" class="menu"><div id="menuHead" class="head"></div><button id="mWaypoint">ここにウェイポイントを設定</button><button id="mClearWp">ウェイポイントを解除</button><button id="mPin">ここにピンを置く</button><button id="mEditPin">ピンを編集</button><button id="mDelPin">ピンを削除</button><button id="mCopy">この場所の座標をコピー</button></div>
 <div id="dialog" class="dialog"><form id="pinForm"><h3 id="pinTitle">ピンを置く</h3><input id="pinLabel" type="text" maxlength="40" placeholder="メモ（例：あとで行く店）" autocomplete="off"><div id="pinIcons" class="choices"></div><div id="pinColors" class="choices"></div><div class="actions"><button type="button" class="cancel" id="pinCancel">やめる</button><button type="submit" class="ok">保存</button></div></form></div>
+<div id="presetPill" class="pill card" hidden title="プリセットを切り替える"></div>
+<div id="presetDialog" class="dialog"><form id="presetForm"><h3 id="pdTitle"></h3><input id="pdName" type="text" maxlength="24" placeholder="名前（例：初心者案内）" autocomplete="off"><textarea id="pdText" spellcheck="false" hidden></textarea><div id="pdNote" class="note"></div><div class="actions"><button type="button" class="cancel" id="pdCancel">やめる</button><button type="submit" class="ok" id="pdOk"></button></div></form></div>
 <div id="toast" class="toast"></div>
 <div id="disabled" class="disabled" hidden><div><h2 id="disTitle"></h2><p id="disText"></p></div></div>
 <script>
@@ -97,7 +106,7 @@ const TILE_BASE="https://assets.loaf-scripts.com/map-tiles/gtav/main/";
 const LAYERS=["render","game","print","postal"];
 const COLORS={0:"#fefefe",1:"#e03232",2:"#71cb71",3:"#5db6e5",4:"#fefefe",5:"#eec64e",6:"#c25050",7:"#9c6eaf",8:"#fe7ac3",9:"#f59d79",10:"#b18f83",11:"#8dcea7",12:"#70a8ae",13:"#d3d1e7",14:"#8f7e98",15:"#6ac4bf",16:"#d5c398",17:"#ea8e50",18:"#97cae9",19:"#b26287",20:"#8f8d79",21:"#a6755e",22:"#afa8a8",23:"#e78d9a",24:"#bbd65b",25:"#0c7b56",26:"#7ac3fe",27:"#ab3ce6",28:"#cda80c",29:"#4561ab",30:"#29a5b8",31:"#b89b7b",32:"#c8e0fe",33:"#f0f096",34:"#ed8ca1",35:"#f98a8a",36:"#fbeea5",37:"#fefefe",38:"#2c6db8",39:"#9a9a9a",40:"#4c4c4c",41:"#f29d9d",42:"#6cb7d6",43:"#afedae",44:"#ffa75f",45:"#f1f1f1",46:"#ecf029",47:"#ff9a18",48:"#f644a5",49:"#e03a3a",50:"#8a6de3",51:"#ff8b5c",52:"#416c41",53:"#b3ddf3",54:"#3a6479",55:"#a0a0a0",56:"#847232",57:"#65b9e7",58:"#4b4175",59:"#e13b3b",60:"#f0cb58",61:"#cd3f98",62:"#cfcfcf",63:"#276a9f",64:"#d87b1b",65:"#8e8393",66:"#f0cb57",67:"#65b9e7",68:"#65b9e7",69:"#79cd79",70:"#efca57",71:"#efca57",72:"#3d3d3d",73:"#efca57",74:"#65b9e7",75:"#e03232",76:"#782323",77:"#65b9e7",78:"#3a6479",79:"#e03232",80:"#65b9e7",81:"#f2a40c",82:"#a4ccaa",83:"#a854f2",84:"#65b9e7",85:"#3d3d3d"};
 // Japanese names for common icons (others show the FiveM reference name)
-const JP={level:"汎用マーカー",safehouse:"家・拠点",police_station:"警察署",police_station_blue:"警察署",hospital:"病院",barber:"床屋",car_mod_shop:"改造ショップ",bennys:"ベニーズ",clothes_store:"服屋",tattoo:"タトゥー",gun_shop:"銃砲店",shootingrange_gunshop:"射撃場",bar:"バー",car_wash:"洗車",garage:"ガレージ",garage_for_sale:"ガレージ",jerry_can:"ガソリンスタンド",crim_holdups:"ショップ",property:"物件",property_for_sale:"物件（販売中）",warehouse:"倉庫",dock:"ボート乗り場",taxi:"タクシー",garbage:"ゴミ収集",tow:"レッカー",tow_truck:"レッカー",weapon_health:"回復",hunting:"狩猟",cinema:"映画館",music_venue:"ライブ会場",gang_vehicle:"車両",gang_vehicle_bikers:"バイク",helicopter:"ヘリ",player_plane:"飛行機",player_boat:"船",friend:"フレンド",poi:"スポット",cop_car:"警察車両",camera:"カメラ",airport:"空港",business:"ビジネス",bank:"銀行",dollar_sign:"お金",store:"ショップ",flight_school:"飛行学校",strip_club:"ストリップクラブ",darts:"ダーツ",golf:"ゴルフ",tennis:"テニス",bowling:"ボウリング",gym:"ジム",restaurant:"レストラン",burger_shot:"バーガーショット",cluckin_bell:"クラッキンベル",laptop:"ノートPC",package:"荷物",repair:"修理",pickup_repair:"修理"};
+const JP={level:"汎用マーカー",north:"Nマーク",safehouse:"家・拠点",police_station:"警察署",police_station_blue:"警察署",hospital:"病院",barber:"床屋",car_mod_shop:"改造ショップ",bennys:"ベニーズ",clothes_store:"服屋",tattoo:"タトゥー",gun_shop:"銃砲店",shootingrange_gunshop:"射撃場",bar:"バー",car_wash:"洗車",garage:"ガレージ",garage_for_sale:"ガレージ",jerry_can:"ガソリンスタンド",crim_holdups:"ショップ",property:"物件",property_for_sale:"物件（販売中）",warehouse:"倉庫",dock:"ボート乗り場",taxi:"タクシー",garbage:"ゴミ収集",tow:"レッカー",tow_truck:"レッカー",weapon_health:"回復",hunting:"狩猟",cinema:"映画館",music_venue:"ライブ会場",gang_vehicle:"車両",gang_vehicle_bikers:"バイク",helicopter:"ヘリ",player_plane:"飛行機",player_boat:"船",friend:"フレンド",poi:"スポット",cop_car:"警察車両",camera:"カメラ",airport:"空港",business:"ビジネス",bank:"銀行",dollar_sign:"お金",store:"ショップ",flight_school:"飛行学校",strip_club:"ストリップクラブ",darts:"ダーツ",golf:"ゴルフ",tennis:"テニス",bowling:"ボウリング",gym:"ジム",restaurant:"レストラン",burger_shot:"バーガーショット",cluckin_bell:"クラッキンベル",laptop:"ノートPC",package:"荷物",repair:"修理",pickup_repair:"修理"};
 const KIND_SPRITE=[1,225,226,64,423,427];
 const PIN_ICONS=["★","⌂","$","✚","⚑","●","♥","!"];
 const PIN_COLORS=["#ffcc4d","#0dd4fc","#72f0c0","#ff5470","#c96bff","#ffffff"];
@@ -110,11 +119,26 @@ const store=(k,v)=>{try{localStorage.setItem(k,v)}catch{}},read=k=>{try{return l
 const readJson=(k,d)=>{try{const v=JSON.parse(read(k)||"null");return v==null?d:v}catch{return d}};
 let layer=LAYERS.includes(read("mio-map-layer"))?read("mio-map-layer"):"render";
 // loc = the street / speed card (off by default: the waypoint pin carries its distance, the overlay the connection)
-const show=Object.assign({blips:true,units:true,alerts:true,pins:true,loc:false},readJson("mio-map-show",{}));
-if(read("mio-map-blips")==="0")show.blips=false;
-// icon types are hidden until ticked in 「表示」 (the player picks what to see)
-const shownSprites=new Set((readJson("mio-map-shown",[])||[]).filter(n=>Number.isInteger(n)));
-let pins=(readJson("mio-map-pins",[])||[]).filter(p=>p&&Number.isFinite(p.x)&&Number.isFinite(p.y)).slice(0,200);
+// Presets: each holds its own pins, icon types (shownSprites) and show toggles; one is active. The pre-1.6 single set
+// (mio-map-pins / -shown / -show) becomes the first preset. Imported data goes through the same clean-up.
+const HEX=/^#[0-9a-f]{6}$/i,ID=/^[a-z0-9]{1,16}$/,MAX_PRESETS=20,MAX_PINS=200;
+const SHOW_DEFAULT={blips:true,units:true,alerts:true,pins:true,loc:false};
+const newId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+function cleanPin(p){if(!p||typeof p!=="object")return null;const x=Number(p.x),y=Number(p.y);if(!Number.isFinite(x)||!Number.isFinite(y)||Math.abs(x)>12000||Math.abs(y)>12000)return null;
+  return{id:typeof p.id==="string"&&ID.test(p.id)?p.id:newId(),x:Math.round(x*10)/10,y:Math.round(y*10)/10,label:String(p.label??"").replace(/\s+/g," ").trim().slice(0,40),icon:PIN_ICONS.includes(p.icon)?p.icon:"★",color:typeof p.color==="string"&&HEX.test(p.color)?p.color.toLowerCase():PIN_COLORS[0]}}
+function cleanPreset(o,name){o=o&&typeof o==="object"?o:{};const show={...SHOW_DEFAULT};if(o.show&&typeof o.show==="object")for(const k in SHOW_DEFAULT)if(typeof o.show[k]==="boolean")show[k]=o.show[k];
+  const seen=new Set(),pins=[];for(const p of Array.isArray(o.pins)?o.pins:[]){const c=cleanPin(p);if(!c)continue;if(seen.has(c.id))c.id=newId();seen.add(c.id);pins.push(c);if(pins.length>=MAX_PINS)break}
+  return{id:typeof o.id==="string"&&ID.test(o.id)?o.id:newId(),name:String(o.name||name||"プリセット").replace(/\s+/g," ").trim().slice(0,24)||"プリセット",pins,shown:[...new Set((Array.isArray(o.shown)?o.shown:[]).filter(n=>Number.isInteger(n)&&n>0&&n<2000))].slice(0,1000),show}}
+let presets=readJson("mio-map-presets",null);
+presets=Array.isArray(presets)?presets.map(p=>cleanPreset(p)).slice(0,MAX_PRESETS):[];
+if(!presets.length)presets=[cleanPreset({name:"メイン",pins:readJson("mio-map-pins",[]),shown:readJson("mio-map-shown",[]),show:Object.assign({},readJson("mio-map-show",{}),read("mio-map-blips")==="0"?{blips:false}:{})})];
+let active=presets.find(p=>p.id===read("mio-map-preset"))||presets[0];
+// the working set of the active preset (icon types are hidden until ticked in 「表示」)
+const show={...active.show};
+const shownSprites=new Set(active.shown);
+let pins=active.pins;
+// icon size: one value for every preset (it suits the monitor, not the content)
+let iconScale=Math.max(.6,Math.min(2,Number(read("mio-map-iconsize"))||1));
 // starts at street level; the last zoom is remembered
 let zoom=Math.max(MIN_ZOOM,Math.min(MAX_ZOOM,Number(read("mio-map-zoom"))||5));
 let follow=true,center={x:450,y:1650},drag=null,retry=null,mapEnabled=false,gameConnected=false,frame=0,blips=[],units=[],alerts=[],blipsDirty=true,placedZoom=-1,socket=null,names={},menuAt=null,menuPin=null,editing=null,toastTimer=0;
@@ -170,7 +194,7 @@ function iconEl(el,sprite){if(el.__sprite===sprite)return;el.__sprite=sprite;con
 function renderBlips(){
   blipLayer.classList.toggle("off",!show.blips);
   if(!show.blips)return;
-  const size=zoom>=5?22:zoom>=4?19:16;
+  const size=Math.round((zoom>=5?22:zoom>=4?19:16)*iconScale);
   for(let i=0;i<blips.length;i++){
     const b=blips[i];let el=blipEls[i];
     if(!el){el=document.createElement("i");el.className="blip";el.appendChild(new Image());el.firstChild.alt="";el.firstChild.decoding="async";blipEls[i]=el;blipLayer.appendChild(el)}
@@ -194,7 +218,7 @@ function renderUnits(){
     const icon=el.firstChild;if(icon.__sprite!==KIND_SPRITE[kind]){icon.__sprite=KIND_SPRITE[kind];icon.style.setProperty("--m",`url(/blip/${KIND_SPRITE[kind]}.png)`)}
     el.style.setProperty("--c",color);
     if(el.lastChild.textContent!==label){el.lastChild.textContent=label;el.title=label}
-    el.style.transform=`translate(${p.x}px,${p.y}px)`;
+    el.style.transform=`translate(${p.x}px,${p.y}px)`+(iconScale!==1?` scale(${iconScale})`:"");
     icon.style.transform=kind===0?"":`rotate(${-num(u[2])}deg)`;
   }
   while(unitEls.length>units.length)unitEls.pop().remove();
@@ -211,11 +235,14 @@ function renderAlerts(){
   $("alertRows").innerHTML=alerts.map((a,i)=>`<div class="a" data-i="${i}"><div class="t">${a.code?`<span class="code">${esc(a.code)}</span>`:""}${esc(a.title||"通報")}</div><div class="s">${esc([a.street,a.text].filter(Boolean).join(" · "))} · ${ago(a.at)}</div></div>`).join("");
   if(!box.classList.contains("open"))$("alertTip").hidden=true;
 }
-function savePins(){store("mio-map-pins",JSON.stringify(pins))}
+function saveState(){active.pins=pins;active.shown=[...shownSprites];active.show={...show};
+  store("mio-map-presets",JSON.stringify(presets));store("mio-map-preset",active.id);
+  store("mio-map-pins",JSON.stringify(pins));store("mio-map-shown",JSON.stringify(active.shown));store("mio-map-show",JSON.stringify(show))}
+const savePins=saveState;
 function renderPins(){
   pinLayer.classList.toggle("off",!show.pins);
   pinLayer.textContent="";
-  for(const pin of pins){const p=px(pin.x,pin.y),el=document.createElement("div");el.className="mypin";el.dataset.id=pin.id;el.style.setProperty("--c",pin.color||"#ffcc4d");el.innerHTML="<span><em></em></span>"+(pin.label?"<b></b>":"");el.querySelector("em").textContent=pin.icon||"★";if(pin.label)el.querySelector("b").textContent=pin.label;el.title=pin.label||"マイピン";el.style.transform=`translate(${p.x}px,${p.y}px)`;pinLayer.appendChild(el)}
+  for(const pin of pins){const p=px(pin.x,pin.y),el=document.createElement("div");el.className="mypin";el.dataset.id=pin.id;el.style.setProperty("--c",pin.color||"#ffcc4d");el.innerHTML="<span><em></em></span>"+(pin.label?"<b></b>":"");el.querySelector("em").textContent=pin.icon||"★";if(pin.label)el.querySelector("b").textContent=pin.label;el.title=pin.label||"マイピン";el.style.transform=`translate(${p.x}px,${p.y}px)`+(iconScale!==1?` scale(${iconScale})`:"");pinLayer.appendChild(el)}
   renderPinList();
 }
 function renderPinList(){
@@ -285,7 +312,9 @@ $("mEditPin").onclick=()=>{const p=menuPin;closeMenu();if(p)openPinDialog(p)};
 $("mDelPin").onclick=()=>{const p=menuPin;closeMenu();if(p){pins=pins.filter(x=>x!==p);savePins();renderPins();toast("ピンを削除しました")}};
 $("mCopy").onclick=()=>{const at=menuAt;closeMenu();if(at)navigator.clipboard?.writeText(`${at.x.toFixed(2)}, ${at.y.toFixed(2)}`).then(()=>toast("座標をコピーしました")).catch(()=>{})};
 addEventListener("pointerdown",e=>{if(!menu.contains(e.target))closeMenu()},true);
-addEventListener("keydown",e=>{if(e.key==="Escape"){closeMenu();closeDialog();closePanels()}});
+addEventListener("keydown",e=>{if(e.key==="Escape"){closeMenu();closeDialog();closePresetDialog();closePanels();return}
+  // 1..9 switch presets (not while typing)
+  if(/^[1-9]$/.test(e.key)&&!e.ctrlKey&&!e.altKey&&!e.metaKey&&!(e.target.closest&&e.target.closest("input,textarea"))&&!document.querySelector(".dialog.open")){const p=presets[+e.key-1];if(p&&p!==active){switchPreset(p);toast(`プリセット：${p.name}`)}}});
 // ---------------------------------------------------------------- personal pins
 let pinIcon="★",pinColor=PIN_COLORS[0];
 function choice(box,list,cur,set,isColor){box.innerHTML="";for(const v of list){const b=document.createElement("button");b.type="button";if(isColor)b.style.background=v;else b.textContent=v;b.classList.toggle("on",v===cur);b.onclick=()=>{set(v);box.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b))};box.appendChild(b)}}
@@ -308,10 +337,12 @@ $("pinRows").addEventListener("click",e=>{const row=e.target.closest(".row");if(
   if(act==="wp"){setWaypoint(p.x,p.y);return}
   goTo(p.x,p.y)});
 // ---------------------------------------------------------------- panels
-function closePanels(){$("alerts").classList.remove("under");document.querySelectorAll(".side").forEach(s=>s.classList.remove("open"));document.querySelectorAll("#view,#pinList").forEach(b=>b.classList.remove("active"));updateHint()}
-function togglePanel(id,btn){const el=$(id),open=!el.classList.contains("open");closePanels();if(open){el.classList.add("open");btn.classList.add("active");$("alerts").classList.add("under");$("alertTip").hidden=true}if(id==="viewPanel"&&open){renderFilter();$("hint").hidden=true}if(id==="pinPanel"&&open)renderPinList()}
+function closePanels(){$("alerts").classList.remove("under");document.querySelectorAll(".side").forEach(s=>s.classList.remove("open"));document.querySelectorAll("#view,#pinList,#presetBtn").forEach(b=>b.classList.remove("active"));updateHint()}
+function togglePanel(id,btn){const el=$(id),open=!el.classList.contains("open");closePanels();if(open){el.classList.add("open");btn.classList.add("active");$("alerts").classList.add("under");$("alertTip").hidden=true}if(id==="viewPanel"&&open){renderFilter();$("hint").hidden=true}if(id==="pinPanel"&&open)renderPinList();if(id==="presetPanel"&&open)renderPresets()}
 $("view").onclick=()=>togglePanel("viewPanel",$("view"));
 $("pinList").onclick=()=>togglePanel("pinPanel",$("pinList"));
+$("presetBtn").onclick=()=>togglePanel("presetPanel",$("presetBtn"));
+$("presetPill").onclick=()=>{if(!$("presetPanel").classList.contains("open"))togglePanel("presetPanel",$("presetBtn"))};
 $("alertToggle").onclick=()=>{closePanels();const box=$("alerts");box.__closed=box.classList.contains("open");renderAlerts()};
 $("alertClose").onclick=()=>{$("alerts").__closed=true;renderAlerts()};
 $("hintOpen").onclick=()=>{if(!$("viewPanel").classList.contains("open"))togglePanel("viewPanel",$("view"))};
@@ -330,11 +361,57 @@ $("alertRows").addEventListener("mouseleave",()=>{$("alertTip").hidden=true});
 $("alertRows").addEventListener("click",e=>{const row=e.target.closest(".a");if(!row)return;const a=alerts[num(row.dataset.i)];if(a)goTo(num(a.x),num(a.y))});
 $("alertRows").addEventListener("contextmenu",e=>{const row=e.target.closest(".a");if(!row)return;const a=alerts[num(row.dataset.i)];if(!a)return;e.preventDefault();openMenu(e,null,{x:num(a.x),y:num(a.y)},(a.code?a.code+" ":"")+(a.title||"通報"))});
 $("viewPanel").addEventListener("change",e=>{const t=e.target;
-  if(t.dataset.sprite){const s=num(t.dataset.sprite)|0;if(t.checked)shownSprites.add(s);else shownSprites.delete(s);store("mio-map-shown",JSON.stringify([...shownSprites]))}
-  if(t.dataset.show){show[t.dataset.show]=t.checked;store("mio-map-show",JSON.stringify(show));renderAlerts();$("locCard").hidden=!show.loc}
+  if(t.dataset.sprite){const s=num(t.dataset.sprite)|0;if(t.checked)shownSprites.add(s);else shownSprites.delete(s);saveState()}
+  if(t.dataset.show){show[t.dataset.show]=t.checked;saveState();renderAlerts();$("locCard").hidden=!show.loc}
   blipsDirty=true;render(false)});
-$("allOn").onclick=()=>{for(const b of blips)shownSprites.add(num(b[0])|0);store("mio-map-shown",JSON.stringify([...shownSprites]));renderFilter();blipsDirty=true;render(false)};
-$("allOff").onclick=()=>{shownSprites.clear();store("mio-map-shown","[]");renderFilter();blipsDirty=true;render(false)};
+$("allOn").onclick=()=>{for(const b of blips)shownSprites.add(num(b[0])|0);saveState();renderFilter();blipsDirty=true;render(false)};
+$("allOff").onclick=()=>{shownSprites.clear();saveState();renderFilter();blipsDirty=true;render(false)};
+// ---------------------------------------------------------------- presets
+function renderPresets(){
+  $("presetRows").innerHTML=presets.map((p,i)=>`<div class="row prow${p===active?" on":""}" data-i="${i}"><span class="key">${i<9?i+1:""}</span><span class="grow">${esc(p.name)}</span><span class="muted">ピン ${p.pins.length}</span><button data-act="ren" title="名前を変える">名前</button>${presets.length>1?'<button data-act="del" title="削除">✕</button>':""}</div>`).join("");
+  $("presetNew").disabled=$("presetDup").disabled=presets.length>=MAX_PRESETS;
+  updatePresetUi()}
+function updatePresetUi(){const pill=$("presetPill");pill.hidden=presets.length<2;pill.textContent=active.name;$("pinPreset").textContent=presets.length>1?active.name:""}
+function switchPreset(p){if(!p||p===active)return;if(active)saveState();active=p;
+  for(const k in show)delete show[k];Object.assign(show,SHOW_DEFAULT,p.show);shownSprites.clear();for(const s of p.shown)shownSprites.add(s);pins=p.pins;
+  saveState();$("locCard").hidden=!show.loc;blipsDirty=true;renderPresets();renderPins();renderFilter();renderAlerts();render(false)}
+function addPreset(p){if(presets.length>=MAX_PRESETS){toast(`プリセットは${MAX_PRESETS}個までです`);return false}presets.push(p);switchPreset(p);return true}
+let pdMode=null,pdTarget=null;
+function openPresetDialog(mode,target){pdMode=mode;pdTarget=target||null;
+  const t={new:["新しいプリセット","作る"],dup:["今のプリセットを複製","作る"],ren:["名前を変える","保存"],export:["プリセットを書き出す","コピー"],import:["プリセットを読み込む","読み込む"]}[mode];
+  $("pdTitle").textContent=t[0];$("pdOk").textContent=t[1];
+  const name=$("pdName"),text=$("pdText");name.hidden=mode==="export";text.hidden=mode!=="export"&&mode!=="import";text.readOnly=mode==="export";
+  name.value=mode==="ren"?target.name:mode==="dup"?active.name+" のコピー":"";
+  text.value=mode==="export"?exportText(active):"";text.placeholder=mode==="import"?"書き出した文字、または座標の一覧を貼り付け\n例）\n-591.7, -287.5 Noir Cafe\nvector3(1138.2, -982.4, 46.4) 素材A":"";
+  $("pdNote").textContent=mode==="export"?"この文字を渡すと、相手は「読み込む」で同じピンとアイコンの種類を使えます。":mode==="import"?"新しいプリセットとして追加します。名前を空にすると書き出し元の名前になります。":mode==="new"?"ピンは空で、アイコンの種類は今のプリセットと同じから始まります。":"";
+  $("presetDialog").classList.add("open");setTimeout(()=>{(mode==="export"?text:mode==="import"?text:name).focus();if(mode==="export")text.select()},30)}
+function closePresetDialog(){$("presetDialog").classList.remove("open");pdMode=null;pdTarget=null}
+function exportText(p){return JSON.stringify({miomap:1,name:p.name,pins:(p===active?pins:p.pins).map(x=>({x:x.x,y:x.y,label:x.label,icon:x.icon,color:x.color})),shown:p===active?[...shownSprites]:p.shown,show:p===active?{...show}:p.show})}
+// our export, or plain lines with two numbers (x, y; a third number = z is ignored) and a name before / after them
+function parseImport(text){text=String(text||"").trim();if(!text)return null;
+  if(text[0]==="{"){try{const o=JSON.parse(text);if(o&&typeof o==="object"&&(Array.isArray(o.pins)||Array.isArray(o.shown)))return cleanPreset({...o,id:""})}catch{}}
+  const list=[];for(const raw of text.split(/\r?\n/)){const line=raw.replace(/vec(?:tor)?[234]?\s*\(/gi," ").replace(/[()\[\]{}"]/g," ");
+    const m=line.match(/(-?\d+(?:\.\d+)?)\s*[,\s]\s*(-?\d+(?:\.\d+)?)(?:\s*[,\s]\s*(-?\d+(?:\.\d+)?))?/);if(!m)continue;
+    const label=(line.slice(0,m.index)+" "+line.slice(m.index+m[0].length)).replace(/^[\s,:;|\-]+|[\s,:;|\-]+$/g,"");
+    const pin=cleanPin({x:+m[1],y:+m[2],label});if(pin)list.push(pin);if(list.length>=MAX_PINS)break}
+  return list.length?cleanPreset({pins:list,shown:[...shownSprites],show:{...show}}):null}
+$("presetForm").onsubmit=e=>{e.preventDefault();const mode=pdMode,name=$("pdName").value.replace(/\s+/g," ").trim().slice(0,24);
+  if(mode==="export"){const v=$("pdText").value;(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(()=>{toast("コピーしました");closePresetDialog()}).catch(()=>{$("pdText").select();toast("Ctrl+C でコピーしてください")});return}
+  if(mode==="ren"){if(pdTarget&&name){pdTarget.name=name;saveState();renderPresets()}closePresetDialog();return}
+  if(mode==="new"){if(addPreset(cleanPreset({name:name||"プリセット"+(presets.length+1),shown:[...shownSprites],show:{...show}})))toast(`プリセット：${active.name}`);closePresetDialog();return}
+  if(mode==="dup"){saveState();if(addPreset(cleanPreset({...JSON.parse(exportText(active)),name:name||active.name+" のコピー"})))toast(`プリセット：${active.name}`);closePresetDialog();return}
+  if(mode==="import"){const p=parseImport($("pdText").value);if(!p){toast("読み込める内容がありません");return}if(name)p.name=name;else if(!/^\s*\{/.test($("pdText").value))p.name="読み込み"+(presets.length+1);
+    if(addPreset(p)){toast(`「${p.name}」を追加しました（ピン ${p.pins.length}）`);closePresetDialog()}}};
+$("pdCancel").onclick=closePresetDialog;
+$("presetNew").onclick=()=>openPresetDialog("new");$("presetDup").onclick=()=>openPresetDialog("dup");
+$("presetExport").onclick=()=>{saveState();openPresetDialog("export")};$("presetImport").onclick=()=>openPresetDialog("import");
+$("presetRows").addEventListener("click",e=>{const row=e.target.closest(".row");if(!row)return;const p=presets[num(row.dataset.i)];if(!p)return;const act=e.target.dataset.act;
+  if(act==="ren"){openPresetDialog("ren",p);return}
+  if(act==="del"){if(presets.length<2||!confirm(`「${p.name}」を削除しますか？（ピン ${p.pins.length} 個も消えます）`))return;const i=presets.indexOf(p);presets.splice(i,1);if(p===active){active=null;switchPreset(presets[Math.max(0,i-1)])}else{saveState();renderPresets()}return}
+  switchPreset(p)});
+// icon size (表示)
+function showIconSize(){$("iconSize").value=Math.round(iconScale*100);$("iconSizeVal").textContent=Math.round(iconScale*100)+"%"}
+$("iconSize").addEventListener("input",e=>{iconScale=Math.max(.6,Math.min(2,num(e.target.value)/100));store("mio-map-iconsize",String(iconScale));showIconSize();blipsDirty=true;render(false)});
 // ---------------------------------------------------------------- dragging / zoom
 function setZoom(z){z=Math.max(MIN_ZOOM,Math.min(MAX_ZOOM,z));if(z===zoom)return false;zoom=z;store("mio-map-zoom",String(z));return true}
 // zoom keeping the map point under (cx, cy) where it is; while following, around the player
@@ -355,7 +432,7 @@ $("fullscreen").onclick=()=>document.fullscreenElement?document.exitFullscreen()
 document.querySelectorAll("[data-layer]").forEach(b=>{b.onclick=()=>{layer=b.dataset.layer;store("mio-map-layer",layer);applyConfig()}});
 fetch("/blip/names.json").then(r=>r.ok?r.json():{}).then(n=>{names=n||{};for(const el of blipEls){const s=el.__sprite;el.__sprite=null;iconEl(el,s)}if($("viewPanel").classList.contains("open"))renderFilter()}).catch(()=>{});
 setInterval(()=>{if(alerts.length)renderAlerts();if($("pinPanel").classList.contains("open"))renderPinList()},30000);
-addEventListener("resize",()=>render(false));$("locCard").hidden=!show.loc;applyConfig();status();connect();
+addEventListener("resize",()=>render(false));$("locCard").hidden=!show.loc;showIconSize();updatePresetUi();saveState();applyConfig();status();connect();
 })();
 </script>
 </body></html>

@@ -12,6 +12,8 @@ Created by nesiddo
   - ホイールはカーソルの位置を中心に拡大、ダブルクリックでも拡大。拡大率は次回も同じ
   - 右クリックでウェイポイントの設定・解除（ゲーム内のマップと同じ操作だけ。サーバーが許可している場合）
   - 自分用のピンとメモ（マップを開いているブラウザにだけ保存）
+  - プリセット: ピンと表示するアイコンの種類を用途ごとにまとめて切り替え（キーボードの 1〜9 でも）。文字にして人に渡したり、座標の一覧から作ったりできる
+  - アイコンの大きさを 60〜200% で変更
   - 「表示」で地図の種類と、地図に出すアイコンの種類を選ぶ（初期状態はすべて非表示。検索あり、アイコンに合わせると名前）
   - 番地入りの地図（サーバーが配信している場合）
   - 勤務中の公務員向けに、同じ職業のメンバーと通報の一覧（カーソルを合わせると詳細。サーバー側の対応が必要）
@@ -80,7 +82,7 @@ dotnet publish .\LocalMediaBridge\LocalMediaBridge.csproj -c Release -r win-x64 
 
 ```bash
 cd installer
-makensis -DVERSION=1.5.0 -DSOURCE=../stage MioCityMediaLink.nsi
+makensis -DVERSION=1.6.0 -DSOURCE=../stage MioCityMediaLink.nsi
 ```
 
 ### MSIX（正式版向け）
