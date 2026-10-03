@@ -1,6 +1,6 @@
 ; MioCity Media Link — per-user installer (NSIS 3, no administrator rights)
 ;
-;   makensis -DVERSION=1.6.0 -DSOURCE=<folder with MioCityMediaLink.exe> installer/MioCityMediaLink.nsi
+;   makensis -DVERSION=1.7.0 -DSOURCE=<folder with MioCityMediaLink.exe> installer/MioCityMediaLink.nsi
 ;
 ; Installs to %LOCALAPPDATA%\Programs\MioCity Media Link, adds a Start menu shortcut and an "Apps & features" entry
 ; for the current user, and optionally starts the app with Windows (HKCU Run, the same value the app's own
@@ -19,7 +19,7 @@ Unicode true
 !define APPROVEDKEY "Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run"
 !define RUNVALUE "MioCityMediaLink"
 !ifndef VERSION
-  !define VERSION "1.6.0"
+  !define VERSION "1.7.0"
 !endif
 !ifndef SOURCE
   !define SOURCE "../publish"

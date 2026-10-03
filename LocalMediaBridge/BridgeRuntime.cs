@@ -136,6 +136,8 @@ public sealed class BridgeRuntime : IAsyncDisposable
 
     private static async Task HandleBlipIconAsync(HttpContext context, int sprite)
     {
+        // only the map page (same origin) may use them; other sites must not be able to probe for this app
+        context.Response.Headers["Cross-Origin-Resource-Policy"] = "same-origin";
         var bytes = BlipIcons.IsKnown(sprite) ? await BlipIcons.GetAsync(sprite, context.RequestAborted) : null;
         if (bytes is null)
         {
@@ -150,6 +152,7 @@ public sealed class BridgeRuntime : IAsyncDisposable
 
     private static IResult HandleBlipNames(HttpContext context)
     {
+        context.Response.Headers["Cross-Origin-Resource-Policy"] = "same-origin";
         context.Response.Headers.CacheControl = "public, max-age=86400";
         return Results.Json(BlipIcons.AllNames.ToDictionary(pair => pair.Key.ToString(System.Globalization.CultureInfo.InvariantCulture), pair => pair.Value));
     }
