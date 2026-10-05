@@ -17,6 +17,7 @@ Created by nesiddo
   - 「表示」で地図の種類と、地図に出すアイコンの種類を選ぶ（初期状態はすべて非表示。検索あり、アイコンに合わせると名前）
   - 番地入りの地図（サーバーが配信している場合）
   - 勤務中の公務員向けに、同じ職業のメンバーと通報の一覧（カーソルを合わせると詳細。サーバー側の対応が必要）
+- YouTube ライブのコメントを、ゲーム内のコメント欄（mio_ui の配信チャット）に表示（ゲーム内の設定で配信 URL か @チャンネルを入れたときだけ。ログイン・API キー不要）
 
 特定の音楽サービスへのログインや API キーは不要です。SMTC に対応したアプリ（ブラウザ、Spotify デスクトップ版など）の再生情報を表示します。
 
@@ -30,6 +31,7 @@ Created by nesiddo
 - 波形は ON の間だけ、既定の出力デバイスの音をメモリ上で表示用の強さに変換します。音声そのものは保存・送信しません
 - 外部マップからゲームへ送るのは、右クリックでのウェイポイントの設定・解除だけです（サーバーが許可したときのみ、1 秒に数回まで）
 - 番地の地図は、接続中の FiveM サーバーが配信するタイルを読み込みます（サーバーから指定された http(s) のアドレスだけ）
+- YouTube のコメントは、ゲーム内で配信 URL か @チャンネルを設定している間だけ `www.youtube.com` から読み込みます。読むのは公開のライブチャットだけで、アカウントやログイン情報は使いません。YouTube の Web ページと同じ仕組みを使うため、YouTube 側の変更で読み込めなくなることがあります
 - 外部マップの背景は `assets.loaf-scripts.com` の地図タイルを読み込みます（ON のときだけ。配信元にはその PC の IP アドレスと表示中のタイル番号が伝わります）。ブリップのアイコンは初回だけ `docs.fivem.net` から取得して PC に保存します
 
 ## インストール（ベータ版）
@@ -82,7 +84,7 @@ dotnet publish .\LocalMediaBridge\LocalMediaBridge.csproj -c Release -r win-x64 
 
 ```bash
 cd installer
-makensis -DVERSION=1.7.0 -DSOURCE=../stage MioCityMediaLink.nsi
+makensis -DVERSION=1.8.0 -DSOURCE=../stage MioCityMediaLink.nsi
 ```
 
 ### MSIX（正式版向け）

@@ -40,6 +40,8 @@ public sealed class BridgeRuntime : IAsyncDisposable
     private readonly CancellationTokenSource _shutdown = new();
     private readonly MediaSessionService _media;
     private readonly AudioSpectrumService _spectrum = new();
+    // app 1.8.0: a YouTube live chat the game asked for (youtube.watch), relayed to the game's UI
+    private readonly YouTubeChatService _youtube = new();
     private readonly object _mediaBroadcastGate = new();
     private WebApplication? _application;
     private bool _started;
@@ -67,6 +69,8 @@ public sealed class BridgeRuntime : IAsyncDisposable
         _media = new MediaSessionService(() => _clients.Values.Any(client => client.MediaEnabled));
         _media.StateChanged += PublishMediaAsync;
         _spectrum.SpectrumChanged += PublishSpectrumAsync;
+        _youtube.StatusChanged += status => BroadcastAsync(_clients.Values, "youtube.status", status);
+        _youtube.MessagesReceived += messages => BroadcastAsync(_clients.Values, "youtube.chat", new { messages });
     }
 
     public BridgeSettings Settings { get; }
@@ -219,6 +223,7 @@ public sealed class BridgeRuntime : IAsyncDisposable
             await SendAsync(client, "media.state", _media.CurrentState, context.RequestAborted);
             // the game collects map data (position, blips) only while a map page is open
             await SendAsync(client, "map.viewers", new { count = _mapViewers.Count }, context.RequestAborted);
+            await SendAsync(client, "youtube.status", _youtube.Status, context.RequestAborted);
 
             while (socket.State == WebSocketState.Open && !context.RequestAborted.IsCancellationRequested)
             {
@@ -242,7 +247,12 @@ public sealed class BridgeRuntime : IAsyncDisposable
             // unless AvailableWaitHandle is used.
             _clients.TryRemove(id, out _);
             RefreshOptionalServices();
-            if (_clients.IsEmpty) await BroadcastMapStatusAsync(false);
+            if (_clients.IsEmpty)
+            {
+                await BroadcastMapStatusAsync(false);
+                // the game closed: stop reading YouTube until it asks again
+                _youtube.Watch(string.Empty);
+            }
         }
     }
 
@@ -380,6 +390,11 @@ public sealed class BridgeRuntime : IAsyncDisposable
                 await BroadcastMapStatusAsync(true);
                 break;
             }
+            case "youtube.watch":
+                // a video id / @handle / channel id or a YouTube URL of one; anything else is refused (only
+                // www.youtube.com is ever contacted). "" stops.
+                _youtube.Watch(ReadString(message.Data, "target", 200));
+                break;
             case "map.state":
                 if (!client.MapEnabled) return;
                 _mapState = ParseMapState(message.Data);
@@ -690,6 +705,7 @@ public sealed class BridgeRuntime : IAsyncDisposable
         }
         _mapViewers.Clear();
         _spectrum.Dispose();
+        await _youtube.DisposeAsync();
         await _media.DisposeAsync();
         if (_application is not null)
         {
