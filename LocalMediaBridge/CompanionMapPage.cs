@@ -41,6 +41,18 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke
 .mk{position:absolute;left:0;top:0;z-index:8;cursor:pointer}.mk span{position:absolute;left:calc(var(--z)/-2);top:calc(var(--z)*-1.15);width:var(--z);height:var(--z);display:grid;place-items:center;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--c);box-shadow:inset 0 0 0 2px #fff,0 3px 6px #000a}.mk span svg{width:58%;height:58%;transform:rotate(45deg);fill:none;stroke:var(--on,#061018);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 .mk b{position:absolute;left:calc(var(--z)/2 + 2px);top:calc(var(--z)*-1.15);padding:2px 7px;border-radius:4px;background:#061018e0;font-size:12px;font-weight:700;white-space:nowrap;border-left:3px solid var(--c)}
 .mk.sel span{box-shadow:inset 0 0 0 2px #fff,0 0 0 3px var(--acc),0 3px 10px #000}
+/* pin look (表示 > ピンの見た目): name background strength, position, wrapping; icon-only pins */
+.mk b,.unit b{background:rgba(6,16,24,var(--lba,.88))}
+.lthin .mk b,.lthin .unit b{text-shadow:0 0 2px #000,0 0 3px #000,0 1px 3px #000}
+.lwrap .mk b,.lwrap .unit b{white-space:normal;width:max-content;max-width:10em;line-height:1.3;overflow-wrap:anywhere}
+.lbelow .mk b{left:0;top:4px;transform:translateX(-50%);text-align:center;border-left:0;border-top:3px solid var(--c)}
+.lbelow .unit b{left:0;top:13px;transform:translateX(-50%);text-align:center;border-left:0;border-top:3px solid var(--c,#5db6e5)}
+.plain .mk span{top:calc(var(--z)/-2);border-radius:0;transform:none;background:none;box-shadow:none;color:var(--c)}
+.plain .mk span svg{width:86%;height:86%;transform:none;stroke:var(--c);stroke-width:2.6;filter:drop-shadow(0 0 1px #000) drop-shadow(0 0 1.5px #000) drop-shadow(0 1px 2px #000c)}
+.plain .mk.sel span{box-shadow:0 0 0 2px var(--acc);border-radius:8px}
+.plain .mk b{top:calc(var(--z)/-2 + 2px)}
+.plain.lbelow .mk b{top:calc(var(--z)/2 + 2px)}
+.look h4{margin:12px 0 6px;font-size:12px;font-weight:700;color:#9fb8c3}.look .range{margin-top:8px}.look .range span{min-width:30px;font-size:12px;color:#9fb8c3}.look label.row{padding:8px 0 2px;border:0}
 .tx{position:absolute;left:0;top:0;z-index:8;transform-origin:0 0;cursor:pointer}.tx b{position:absolute;transform:translate(-50%,-50%);white-space:pre;font-weight:800;line-height:1.2;color:var(--c);text-shadow:0 0 3px #000,0 0 2px #000,0 1px 2px #000}.tx.sel b{outline:2px dashed var(--acc);outline-offset:4px;border-radius:3px}
 #map.draw .mk,#map.draw .tx{pointer-events:none}
 /* right toolbar (map controls) */
@@ -105,13 +117,13 @@ input[type=checkbox]{accent-color:var(--acc);width:17px;height:17px;flex:none}
 <body>
 <main id="map"><div id="world"><div id="tiles"></div><svg id="shapes" xmlns="http://www.w3.org/2000/svg"></svg><div id="blips"></div><div id="units"></div><div id="items"></div><div id="waypoint" class="wp" hidden><i></i><b></b></div><div id="player" class="player" hidden><i></i></div></div></main>
 <nav class="tools">
-<div class="grp card"><button id="follow" class="tb active" title="自分の位置に戻る（F）"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/><path d="M12 1v3M12 20v3M1 12h3M20 12h3"/></svg><span>追従</span></button><button id="zoomIn" class="tb" title="拡大（+・ホイール・ダブルクリック）"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>拡大</span></button><button id="zoomOut" class="tb" title="縮小（-）"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg><span>縮小</span></button></div>
+<div class="grp card"><button id="follow" class="tb active" title="自分の位置に戻る（F）"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/><path d="M12 1v3M12 20v3M1 12h3M20 12h3"/></svg><span>追従</span></button><button id="zoomIn" class="tb" title="拡大（+）"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>拡大</span></button><button id="zoomOut" class="tb" title="縮小（-）"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg><span>縮小</span></button></div>
 <div class="grp card"><button id="view" class="tb" title="地図の種類・表示するもの"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 8l10 5 10-5z"/><path d="m2 13 10 5 10-5"/></svg><span>表示</span></button><button id="pinList" class="tb" title="書き込んだものの一覧"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg><span>一覧</span></button><button id="alertToggle" class="tb" title="通報の一覧" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/></svg><span>通報</span><em id="alertBadge" class="badge" hidden></em></button></div>
 <div class="grp card"><button id="fullscreen" class="tb" title="全画面"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>全画面</span></button></div>
 </nav>
-<section id="locCard" class="card loc" hidden><span id="conn" class="dot"></span><div><div id="location" class="main">FiveM を待っています</div><div id="sub" class="sub"><span id="zone">MioCity Media Link から現在地を受信します</span></div></div></section>
+<section id="locCard" class="card loc" hidden><span id="conn" class="dot"></span><div><div id="location" class="main">FiveM を待っています</div><div id="sub" class="sub"><span id="zone"></span></div></div></section>
 <nav id="dock" class="pal card" aria-label="書き込み">
-<button data-tool="select" class="active" title="選ぶ・動かす（V）　キー操作の一覧は ?"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v15l4-4 3 7 2.5-1-3-7H18z"/></svg><kbd>V</kbd></button>
+<button data-tool="select" class="active" title="選ぶ・動かす（V）"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v15l4-4 3 7 2.5-1-3-7H18z"/></svg><kbd>V</kbd></button>
 <button data-tool="m" title="ピン（P）"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><kbd>P</kbd></button>
 <button data-tool="t" title="テキスト（T）"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7V5h16v2M12 5v14M8.5 19h7"/></svg><kbd>T</kbd></button>
 <button data-tool="a" title="範囲（S）"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="1.5" stroke-dasharray="3 2.5"/></svg><kbd>S</kbd></button>
@@ -121,26 +133,26 @@ input[type=checkbox]{accent-color:var(--acc);width:17px;height:17px;flex:none}
 <button id="redo" title="やり直し（Ctrl+Y）" disabled><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button>
 </nav>
 <div id="toolOpts" class="flyout card" hidden></div>
-<div class="sbar card"><span id="stat" class="stat"><span>FiveM を待っています</span></span><button id="presetBtn" title="プリセットの切り替え（キーボードの 1〜9 でも）"><span class="pk">プリセット</span><span id="presetName">メイン</span></button><span id="coords" class="coords">X —    Y —</span></div>
+<div class="sbar card"><span id="stat" class="stat"><span>FiveM を待っています</span></span><button id="presetBtn" title="プリセット（1〜9）"><span class="pk">プリセット</span><span id="presetName">メイン</span></button><span id="coords" class="coords">X —    Y —</span></div>
 <aside id="viewPanel" class="side card">
 <section><h3>地図の種類</h3><div class="seg"><button data-layer="render">写真</button><button data-layer="game">ゲーム</button><button data-layer="print">白地図</button><button data-layer="postal" hidden>番地</button></div></section>
-<section><h3>マークの大きさ</h3><div class="range"><input id="iconSize" type="range" min="60" max="200" step="10"><b id="iconSizeVal"></b></div></section>
+<section><h3>マークの大きさ</h3><div class="range"><input id="iconSize" type="range" min="60" max="200" step="10"><b id="iconSizeVal"></b></div></section><section class="look"><h3>ピンの見た目</h3><div class="seg" id="lookShape"><button data-look-shape="drop">しずく</button><button data-look-shape="icon">アイコン</button></div><h4>名前</h4><div class="seg" id="lookPos"><button data-look-pos="right">右</button><button data-look-pos="below">下</button></div><div class="range"><span>背景</span><input id="lookBg" type="range" min="0" max="100" step="5"><b id="lookBgVal"></b></div><label class="row"><input type="checkbox" id="lookWrap"><span class="grow">折り返す</span></label></section>
 <section><h3>地図に出すもの</h3><div id="layerToggles"></div></section>
-<section><h3>地図アイコンの種類</h3><div class="muted" style="margin-bottom:8px">チェックした種類だけ地図に出ます</div><input id="iconSearch" class="search" type="search" placeholder="種類を探す（例：病院）" autocomplete="off"><div class="btns"><button id="allOn">すべて表示</button><button id="allOff">すべて隠す</button></div><div id="spriteList"><div class="muted">アイコンを受信すると一覧が出ます</div></div></section>
+<section><h3>地図アイコンの種類</h3><input id="iconSearch" class="search" type="search" placeholder="種類を探す" autocomplete="off"><div class="btns"><button id="allOn">すべて表示</button><button id="allOff">すべて隠す</button></div><div id="spriteList"><div class="muted">受信待ち</div></div></section>
 <div id="privacy" class="foot"></div>
 </aside>
-<aside id="pinPanel" class="side card"><h3>書き込み<span id="pinPreset" class="muted"></span></h3><div class="muted" style="margin-bottom:10px">左のパレットでピン・テキスト・範囲・線を書き込めます。行をクリックするとその場所へ移動します。このPCのブラウザにだけ保存されます。</div><div id="pinRows"></div></aside>
-<aside id="presetPanel" class="side card"><h3>プリセット</h3><div class="muted" style="margin-bottom:10px">書き込んだものと「表示」で選んだアイコンの種類をまとめて切り替えます。キーボードの 1〜9 でも切り替えられます。</div><div id="presetRows"></div><div class="btns" style="margin-top:10px"><button id="presetNew">新しく作る</button><button id="presetDup">今のを複製</button></div>
-<section><h3>共有・読み込み</h3><div class="muted" style="margin-bottom:8px">今のプリセットを文字にして人に渡せます。座標の一覧（1行に「x, y 名前」）からも作れます。</div><div class="btns"><button id="presetExport">書き出す</button><button id="presetImport">読み込む</button></div></section></aside>
+<aside id="pinPanel" class="side card"><h3>書き込み<span id="pinPreset" class="muted"></span></h3><div id="pinRows"></div></aside>
+<aside id="presetPanel" class="side card"><h3>プリセット</h3><div id="presetRows"></div><div class="btns" style="margin-top:10px"><button id="presetNew">新しく作る</button><button id="presetDup">今のを複製</button></div>
+<section><h3>共有・読み込み</h3><div class="btns"><button id="presetExport">書き出す</button><button id="presetImport">読み込む</button></div></section></aside>
 <aside id="editPanel" class="side card"></aside>
-<section id="alerts" class="alerts card"><div class="ah">通報<span id="alertCount" class="n"></span><button id="alertClose" title="閉じる（右の「通報」でまた開けます）"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div id="alertRows"></div></section><div id="alertTip" class="alert-tip" hidden></div>
+<section id="alerts" class="alerts card"><div class="ah">通報<span id="alertCount" class="n"></span><button id="alertClose" title="閉じる"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div id="alertRows"></div></section><div id="alertTip" class="alert-tip" hidden></div>
 <div id="hint" class="hint card" hidden><span>地図のアイコンは「表示」で種類を選ぶと出ます</span><button id="hintOpen">表示を開く</button><button id="hintClose">閉じる</button></div>
-<div id="menu" class="menu"><div id="menuHead" class="head"></div><button id="mWaypoint">ここにウェイポイントを設定</button><button id="mClearWp">ウェイポイントを解除</button><button id="mMarker">ここにピンを立てる</button><button id="mEdit">編集</button><button id="mDelItem">削除</button><button id="mCopy">この場所の座標をコピー</button></div>
-<div id="presetDialog" class="dialog"><form id="presetForm"><h3 id="pdTitle"></h3><input id="pdName" type="text" maxlength="24" placeholder="名前（例：初心者案内）" autocomplete="off"><textarea id="pdText" spellcheck="false" hidden></textarea><div id="pdNote" class="note"></div><div class="actions"><button type="button" class="cancel" id="pdCancel">やめる</button><button type="submit" class="ok" id="pdOk"></button></div></form></div>
+<div id="menu" class="menu"><div id="menuHead" class="head"></div><button id="mWaypoint">ここにウェイポイントを設定</button><button id="mClearWp">ウェイポイントを解除</button><button id="mMarker">ここにピンを立てる</button><button id="mPaste">ここに貼り付け</button><button id="mEdit">編集</button><button id="mDelItem">削除</button><button id="mCopy">この場所の座標をコピー</button></div>
+<div id="presetDialog" class="dialog"><form id="presetForm"><h3 id="pdTitle"></h3><input id="pdName" type="text" maxlength="24" placeholder="名前" autocomplete="off"><textarea id="pdText" spellcheck="false" hidden></textarea><div id="pdNote" class="note"></div><div class="actions"><button type="button" class="cancel" id="pdCancel">やめる</button><button type="submit" class="ok" id="pdOk"></button></div></form></div>
 <div id="helpDialog" class="dialog"><div class="box"><h3>キー操作</h3><div class="keys">
-<h4>書き込み</h4><span>選ぶ・動かす</span><span><kbd>V</kbd></span><span>ピン</span><span><kbd>P</kbd></span><span>テキスト</span><span><kbd>T</kbd></span><span>範囲</span><span><kbd>S</kbd></span><span>線・矢印</span><span><kbd>L</kbd></span><span>自由な形を閉じる</span><span><kbd>Enter</kbd></span><span>選んだものを消す</span><span><kbd>Delete</kbd></span><span>ひとつ戻す / 進める</span><span><kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Y</kbd></span>
+<h4>書き込み</h4><span>選ぶ・動かす</span><span><kbd>V</kbd></span><span>ピン</span><span><kbd>P</kbd></span><span>テキスト</span><span><kbd>T</kbd></span><span>範囲</span><span><kbd>S</kbd></span><span>線・矢印</span><span><kbd>L</kbd></span><span>自由な形を閉じる</span><span><kbd>Enter</kbd></span><span>選んだものを消す</span><span><kbd>Delete</kbd></span><span>コピー / 貼り付け</span><span><kbd>Ctrl</kbd>+<kbd>C</kbd> / <kbd>Ctrl</kbd>+<kbd>V</kbd></span><span>ひとつ戻す / 進める</span><span><kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Y</kbd></span>
 <h4>地図の操作</h4><span>自分の位置へ</span><span><kbd>F</kbd></span><span>拡大・縮小</span><span><kbd>+</kbd> <kbd>-</kbd></span><span>プリセット</span><span><kbd>1</kbd>〜<kbd>9</kbd></span><span>取り消し・閉じる</span><span><kbd>Esc</kbd></span><span>この一覧</span><span><kbd>?</kbd></span>
-</div><div class="note">文字を入力している間はキー操作は効きません。</div><div class="actions"><button type="button" class="ok" id="helpClose">閉じる</button></div></div></div>
+</div><div class="actions"><button type="button" class="ok" id="helpClose">閉じる</button></div></div></div>
 <div id="toast" class="toast"></div>
 <div id="disabled" class="disabled" hidden><div><h2 id="disTitle"></h2><p id="disText"></p></div></div>
 <script>
@@ -153,7 +165,7 @@ const TILE_BASE="https://assets.loaf-scripts.com/map-tiles/gtav/main/";
 const LAYERS=["render","game","print","postal"];
 const COLORS={0:"#fefefe",1:"#e03232",2:"#71cb71",3:"#5db6e5",4:"#fefefe",5:"#eec64e",6:"#c25050",7:"#9c6eaf",8:"#fe7ac3",9:"#f59d79",10:"#b18f83",11:"#8dcea7",12:"#70a8ae",13:"#d3d1e7",14:"#8f7e98",15:"#6ac4bf",16:"#d5c398",17:"#ea8e50",18:"#97cae9",19:"#b26287",20:"#8f8d79",21:"#a6755e",22:"#afa8a8",23:"#e78d9a",24:"#bbd65b",25:"#0c7b56",26:"#7ac3fe",27:"#ab3ce6",28:"#cda80c",29:"#4561ab",30:"#29a5b8",31:"#b89b7b",32:"#c8e0fe",33:"#f0f096",34:"#ed8ca1",35:"#f98a8a",36:"#fbeea5",37:"#fefefe",38:"#2c6db8",39:"#9a9a9a",40:"#4c4c4c",41:"#f29d9d",42:"#6cb7d6",43:"#afedae",44:"#ffa75f",45:"#f1f1f1",46:"#ecf029",47:"#ff9a18",48:"#f644a5",49:"#e03a3a",50:"#8a6de3",51:"#ff8b5c",52:"#416c41",53:"#b3ddf3",54:"#3a6479",55:"#a0a0a0",56:"#847232",57:"#65b9e7",58:"#4b4175",59:"#e13b3b",60:"#f0cb58",61:"#cd3f98",62:"#cfcfcf",63:"#276a9f",64:"#d87b1b",65:"#8e8393",66:"#f0cb57",67:"#65b9e7",68:"#65b9e7",69:"#79cd79",70:"#efca57",71:"#efca57",72:"#3d3d3d",73:"#efca57",74:"#65b9e7",75:"#e03232",76:"#782323",77:"#65b9e7",78:"#3a6479",79:"#e03232",80:"#65b9e7",81:"#f2a40c",82:"#a4ccaa",83:"#a854f2",84:"#65b9e7",85:"#3d3d3d"};
 // Japanese names for common icons (others show the FiveM reference name)
-const JP={level:"汎用マーカー",north:"Nマーク",safehouse:"家・拠点",police_station:"警察署",police_station_blue:"警察署",hospital:"病院",barber:"床屋",car_mod_shop:"改造ショップ",bennys:"ベニーズ",clothes_store:"服屋",tattoo:"タトゥー",gun_shop:"銃砲店",shootingrange_gunshop:"射撃場",bar:"バー",car_wash:"洗車",garage:"ガレージ",garage_for_sale:"ガレージ",jerry_can:"ガソリンスタンド",crim_holdups:"ショップ",property:"物件",property_for_sale:"物件（販売中）",warehouse:"倉庫",dock:"ボート乗り場",taxi:"タクシー",garbage:"ゴミ収集",tow:"レッカー",tow_truck:"レッカー",weapon_health:"回復",hunting:"狩猟",cinema:"映画館",music_venue:"ライブ会場",gang_vehicle:"車両",gang_vehicle_bikers:"バイク",helicopter:"ヘリ",player_plane:"飛行機",player_boat:"船",friend:"フレンド",poi:"スポット",cop_car:"警察車両",camera:"カメラ",airport:"空港",business:"ビジネス",bank:"銀行",dollar_sign:"お金",store:"ショップ",flight_school:"飛行学校",strip_club:"ストリップクラブ",darts:"ダーツ",golf:"ゴルフ",tennis:"テニス",bowling:"ボウリング",gym:"ジム",restaurant:"レストラン",burger_shot:"バーガーショット",cluckin_bell:"クラッキンベル",laptop:"ノートPC",package:"荷物",repair:"修理",pickup_repair:"修理"};
+const JP={level:"汎用マーカー",north:"Nマーク",safehouse:"家・拠点",police_station:"警察署",police_station_blue:"警察署",hospital:"病院",barber:"床屋",car_mod_shop:"改造ショップ",bennys:"ベニーズ",clothes_store:"服屋",tattoo:"タトゥー",gun_shop:"銃砲店",shootingrange_gunshop:"射撃場",bar:"バー",car_wash:"洗車",garage:"ガレージ",garage_for_sale:"ガレージ",jerry_can:"ガソリンスタンド",crim_holdups:"ショップ",property:"物件",property_for_sale:"販売中の物件",warehouse:"倉庫",dock:"ボート乗り場",taxi:"タクシー",garbage:"ゴミ収集",tow:"レッカー",tow_truck:"レッカー",weapon_health:"回復",hunting:"狩猟",cinema:"映画館",music_venue:"ライブ会場",gang_vehicle:"車両",gang_vehicle_bikers:"バイク",helicopter:"ヘリ",player_plane:"飛行機",player_boat:"船",friend:"フレンド",poi:"スポット",cop_car:"警察車両",camera:"カメラ",airport:"空港",business:"ビジネス",bank:"銀行",dollar_sign:"お金",store:"ショップ",flight_school:"飛行学校",strip_club:"ストリップクラブ",darts:"ダーツ",golf:"ゴルフ",tennis:"テニス",bowling:"ボウリング",gym:"ジム",restaurant:"レストラン",burger_shot:"バーガーショット",cluckin_bell:"クラッキンベル",laptop:"ノートPC",package:"荷物",repair:"修理",pickup_repair:"修理"};
 const KIND_SPRITE=[1,225,226,64,423,427];
 const PIN_ICONS=["★","⌂","$","✚","⚑","●","♥","!"];
 const PIN_COLORS=["#ffcc4d","#0dd4fc","#72f0c0","#ff5470","#c96bff","#ffffff"];
@@ -178,13 +190,16 @@ const ICONS={
   box:["荷物",'<path d="m12 3 8 4.5v9L12 21l-8-4.5v-9z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9"/>'],
   flask:["素材",'<path d="M9.5 3h5M10.5 3v6L5 19a1.5 1.5 0 0 0 1.3 2h11.4a1.5 1.5 0 0 0 1.3-2l-5.5-10V3"/><path d="M7.5 15h9"/>'],
   leaf:["植物",'<path d="M5 19c0-8 5-13 15-14-1 10-6 15-14 15"/><path d="M5 19 13 11"/>'],
+  wrench:["修理",'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/>'],
+  hammer:["クラフト",'<path d="m15 12-8.4 8.4a2.1 2.1 0 0 1-3-3L12 9"/><path d="M17.6 15 22 10.6"/><path d="m20.9 11.7-1.3-1.3a3.1 3.1 0 0 1-.9-2.2V6.9l-3.3-3.3A5.6 5.6 0 0 0 11.4 2H9l.9.8a6.2 6.2 0 0 1 2.1 4.6v1.6l2 2h2.5c.8 0 1.6.3 2.2.9l1.2 1.3"/>'],
+  recycle:["リサイクル",'<path d="M7 19H4.8a1.8 1.8 0 0 1-1.6-2.7L7.2 9.5"/><path d="M11 19h8.2a1.8 1.8 0 0 0 1.6-2.7l-1.2-2.1"/><path d="m14 16-3 3 3 3"/><path d="M8.3 13.6 7.2 9.5l-4.1 1.1"/><path d="m9.3 5.7.9-1.6a1.8 1.8 0 0 1 3.2 0l4 7.1"/><path d="m13.4 10.3 4.1 1.1 1.1-4.1"/>'],
 };
 const OLD_ICON={"★":"star","⌂":"home","$":"money","✚":"medical","⚑":"flag","●":"pin","♥":"heart","!":"warning"};
 const TYPE={m:"ピン",t:"テキスト",a:"範囲",l:"線",r:"矢印"};
 const BOUNDS={x0:-5000,x1:6000,y0:-5500,y1:9000};   // the GTA map (the Bridge accepts waypoints only inside it)
 const inMap=(x,y)=>x>=BOUNDS.x0&&x<=BOUNDS.x1&&y>=BOUNDS.y0&&y<=BOUNDS.y1;
 const SWATCHES=["#ffcc4d","#ff9f43","#ff5470","#ff7ac8","#c96bff","#3b82f6","#0dd4fc","#72f0c0","#f4f7fa","#1b232b"];
-const TOOL_TIP={m:"地図をクリックした所にピンが立ちます。続けて何本でも立てられます。",t:"地図をクリックした所に文字を書きます。",l:"2点をクリックすると、その間に線を引きます。1点目のあと右クリックで取り消し。"};
+const TOOL_TIP={m:"クリックでピン",t:"クリックで文字",l:"2点をクリックで線、右クリックで取り消し"};
 const TOOL_KEY={select:"V",m:"P",t:"T",a:"S",l:"L"};
 const $=id=>document.getElementById(id);
 const map=$("map"),world=$("world"),tiles=$("tiles"),shapeLayer=$("shapes"),blipLayer=$("blips"),unitLayer=$("units"),itemLayer=$("items"),player=$("player"),waypoint=$("waypoint"),disabled=$("disabled"),menu=$("menu");
@@ -238,6 +253,11 @@ const shownSprites=new Set(active.shown);
 let items=active.items;
 // icon size: one value for every preset (it suits the monitor, not the content)
 let iconScale=Math.max(.6,Math.min(2,Number(read("mio-map-iconsize"))||1));
+// pin look (表示 > ピンの見た目): drop or icon-only, name right / below, its background strength, wrapping
+const look=(()=>{const o=readJson("mio-map-look",{})||{};return{shape:o.shape==="icon"?"icon":"drop",pos:o.pos==="below"?"below":"right",bg:typeof o.bg==="number"&&o.bg>=0&&o.bg<=1?Math.round(o.bg*20)/20:.9,wrap:o.wrap!==false}})();
+function applyLook(){const m=$("map");m.classList.toggle("plain",look.shape==="icon");m.classList.toggle("lbelow",look.pos==="below");m.classList.toggle("lwrap",look.wrap);m.classList.toggle("lthin",look.bg<.5);m.style.setProperty("--lba",String(look.bg))}
+function showLook(){document.querySelectorAll("[data-look-shape]").forEach(b=>b.classList.toggle("active",b.dataset.lookShape===look.shape));document.querySelectorAll("[data-look-pos]").forEach(b=>b.classList.toggle("active",b.dataset.lookPos===look.pos));$("lookBg").value=Math.round(look.bg*100);$("lookBgVal").textContent=look.bg<=0?"なし":Math.round(look.bg*100)+"%";$("lookWrap").checked=look.wrap}
+function setLook(k,v){look[k]=v;store("mio-map-look",JSON.stringify(look));applyLook();showLook()}
 let zoom=Math.max(MIN_ZOOM,Math.min(MAX_ZOOM,Number(read("mio-map-zoom"))||5));
 // drawing tool + its options (remembered)
 const OPT_DEFAULT={color:{m:"#ffcc4d",t:"#ffffff",a:"#3b82f6",l:"#3b82f6",r:"#ff5470"},icon:"pin",size:32,tsize:18,areaMode:"rect",stroke:"#ffffff",opacity:.35,width:4};
@@ -245,6 +265,8 @@ const opts=(()=>{const o=readJson("mio-map-tool",{})||{},c=o.color||{};return{co
   icon:hasIcon(o.icon)?o.icon:"pin",size:Math.round(clampN(o.size,20,56,32)),arrow:o.arrow===true,tsize:Math.round(clampN(o.tsize,12,40,18)),areaMode:o.areaMode==="poly"?"poly":"rect",stroke:hexOr(o.stroke,"#ffffff"),opacity:clampN(o.opacity,.05,.9,.35),width:Math.round(clampN(o.width,1,10,4))}})();
 const saveOpts=()=>store("mio-map-tool",JSON.stringify(opts));
 let tool="select",draft=null,hoverAt=null,selId=null;
+// Ctrl+C / Ctrl+V: the copied item survives preset switches and reloads; a paste lands under the mouse
+let clip=(()=>{const o=readJson("mio-map-clip",null);return o?cleanItem(o):null})(),pointerAt=null;
 let itemsDirty=true,saveTimer=0,saveWarnAt=0;
 let follow=true,center={x:450,y:1650},drag=null,retry=null,mapEnabled=false,gameConnected=false,frame=0,blips=[],units=[],alerts=[],blipsDirty=true,placedZoom=-1,socket=null,names={},menuAt=null,menuItem=null,toastTimer=0;
 const tileCache=new Map(),blipEls=[],unitEls=[];
@@ -404,12 +426,16 @@ function redo(){editCommit();if(!redoStack.length)return;undoStack.push(snapshot
 // the last values used there become the defaults for the next one of that kind.
 function setTool(t){if(t==="r")t="l";if(t!==tool){draft=null;if(t!=="select")select(null)}tool=t;
   document.querySelectorAll("#dock [data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===t));map.classList.toggle("draw",t!=="select");renderToolOpts();renderDraft()}
-function swatches(key,cur){return`<div class="sws">${SWATCHES.map(c=>`<button type="button" class="sw${c===cur?" on":""}" style="background:${c}" data-sw="${key}" data-c="${c}" title="${c}"></button>`).join("")}<label class="swc" title="ほかの色"><input type="color" data-cc="${key}" value="${cur}"></label></div>`}
+// colours picked with "+" join the palette, newest first; right-click one to take it out
+let mySwatches=(()=>{const a=readJson("mio-map-swatches",[]);return Array.isArray(a)?[...new Set(a.filter(c=>typeof c==="string"&&HEX.test(c)).map(c=>c.toLowerCase()))].filter(c=>!SWATCHES.includes(c)).slice(0,10):[]})();
+function saveSwatches(){store("mio-map-swatches",JSON.stringify(mySwatches))}
+function addSwatch(c){c=c.toLowerCase();if(!HEX.test(c)||SWATCHES.includes(c))return;mySwatches=[c,...mySwatches.filter(x=>x!==c)].slice(0,10);saveSwatches()}
+function swatches(key,cur){return`<div class="sws">${SWATCHES.map(c=>`<button type="button" class="sw${c===cur?" on":""}" style="background:${c}" data-sw="${key}" data-c="${c}" title="${c}"></button>`).join("")}${mySwatches.map(c=>`<button type="button" class="sw mine${c===cur?" on":""}" style="background:${c}" data-sw="${key}" data-c="${c}" title="${c}　右クリックで外す"></button>`).join("")}<label class="swc" title="ほかの色"><input type="color" data-cc="${key}" value="${cur}"></label></div>`}
 function iconGrid(cur){return`<div class="icons">${Object.entries(ICONS).map(([k,v])=>`<button type="button" class="${k===cur?"on":""}" data-icon="${k}">${svgOf(k)}${v[0]}</button>`).join("")}</div>`}
 function range(key,min,max,step,val,fmt){return`<div class="range"><input type="range" data-r="${key}" min="${min}" max="${max}" step="${step}" value="${val}"><b>${fmt(val)}</b></div>`}
 const pct=v=>Math.round(v*100)+"%",pxs=v=>v+"px";
 function renderToolOpts(){const box=$("toolOpts");if(tool==="select"){box.hidden=true;return}box.hidden=false;
-  const tip=tool==="a"?(opts.areaMode==="rect"?"2点をクリックすると、その2点を角にした四角で囲みます。1点目のあと右クリックで取り消し。":"角をクリックしていき、ダブルクリック・Enter・右クリックで閉じます。"):TOOL_TIP[tool];
+  const tip=tool==="a"?(opts.areaMode==="rect"?"2点をクリックで四角、右クリックで取り消し":"角をクリック、ダブルクリックか Enter か右クリックで閉じる"):TOOL_TIP[tool];
   let h=`<div class="fh"><span>${tool==="l"?"線・矢印":TYPE[tool]}</span><kbd>${TOOL_KEY[tool]}</kbd></div><div class="tip">${tip}色や形は、置いたあとに右のパネルで変えられます。</div>`;
   if(tool==="a")h+=`<div class="seg"><button type="button" data-mode="rect" class="${opts.areaMode==="rect"?"active":""}">四角</button><button type="button" data-mode="poly" class="${opts.areaMode==="poly"?"active":""}">自由な形</button></div>`;
   if(tool==="l")h+=`<div class="seg"><button type="button" data-arrow="0" class="${opts.arrow?"":"active"}">線</button><button type="button" data-arrow="1" class="${opts.arrow?"active":""}">矢印</button></div>`;
@@ -437,7 +463,7 @@ function placeAt(g){g=clampG(g);hoverAt=g;
 function finishPoly(){if(!draft||draft.t!=="a")return;let pts=draft.pts;
   // a double click adds the same point twice
   while(pts.length>=2){const a=px(pts[pts.length-1][0],pts[pts.length-1][1]),b=px(pts[pts.length-2][0],pts[pts.length-2][1]);if(Math.hypot(a.x-b.x,a.y-b.y)<6)pts=pts.slice(0,-1);else break}
-  draft=null;if(pts.length>=3)addItem({t:"a",pts,color:opts.color.a,stroke:opts.stroke,opacity:opts.opacity});else toast("角が足りません（3点以上）");renderDraft()}
+  draft=null;if(pts.length>=3)addItem({t:"a",pts,color:opts.color.a,stroke:opts.stroke,opacity:opts.opacity});else toast("角は3点以上必要です");renderDraft()}
 // ---------------------------------------------------------------- selection and the edit panel
 function select(id){if(id!==selId)editCommit();const prev=selId;selId=id&&itemById(id)?id:null;
   for(const k of [prev,selId]){const it=k&&itemById(k);if(it)renderOne(it)}
@@ -447,7 +473,7 @@ function renderEdit(){const it=itemById(selId),p=$("editPanel");if(!it)return;
   // keep what is being typed only when the panel is redrawn for the same item
   const keep=p.dataset.id===it.id&&document.activeElement&&p.contains(document.activeElement)&&document.activeElement.id==="editLabel";p.dataset.id=it.id;
   let h=`<h3>${TYPE[it.t]}を編集<span class="muted">${state.active?dist(distanceTo(centerOf(it).x,centerOf(it).y)):""}</span></h3>`;
-  h+=`<div class="olab">${it.t==="t"?"文字":"名前（地図に表示）"}</div><input id="editLabel" class="field" type="text" maxlength="${it.t==="t"?80:40}" placeholder="${it.t==="t"?"文字を入力":"名前を入力（なしでも可）"}" autocomplete="off">`;
+  h+=`<div class="olab">${it.t==="t"?"文字":"名前"}</div><input id="editLabel" class="field" type="text" maxlength="${it.t==="t"?80:40}" placeholder="${it.t==="t"?"文字を入力":"名前"}" autocomplete="off">`;
   h+=`<div class="olab">${it.t==="a"?"中の色":"色"}</div>${swatches("item:color",it.color)}`;
   if(it.t==="m")h+=`<div class="olab">ピンの絵柄</div>${iconGrid(it.icon)}<div class="olab">大きさ</div>${range("size",20,56,2,it.size,pxs)}`;
   if(it.t==="t")h+=`<div class="olab">大きさ</div>${range("size",12,40,1,it.size,pxs)}`;
@@ -460,7 +486,8 @@ $("editPanel").addEventListener("input",e=>{const t=e.target;
   if(t.id==="editLabel"){editApply(it=>{it.label=it.t==="t"?t.value.slice(0,80):t.value.slice(0,40)});return}
   if(t.dataset.cc&&HEX.test(t.value)){const k=t.dataset.cc.slice(5);editApply(it=>{it[k]=t.value.toLowerCase()});return}
   if(t.dataset.r){const v=num(t.value),k=t.dataset.r;editApply(it=>{it[k]=k==="opacity"?Math.round(v*100)/100:Math.round(v)});t.nextElementSibling.textContent=k==="opacity"?pct(v):pxs(Math.round(v))}});
-$("editPanel").addEventListener("change",e=>{const t=e.target;if(t.id==="editLabel"){const it=itemById(selId);if(it&&it.t==="t"&&!it.label.trim())editApply(i=>{i.label="テキスト"})}editCommit();if(t.dataset.cc)renderEdit()});
+$("editPanel").addEventListener("change",e=>{const t=e.target;if(t.id==="editLabel"){const it=itemById(selId);if(it&&it.t==="t"&&!it.label.trim())editApply(i=>{i.label="テキスト"})}editCommit();if(t.dataset.cc){if(HEX.test(t.value))addSwatch(t.value);renderEdit()}});
+$("editPanel").addEventListener("contextmenu",e=>{const b=e.target.closest(".sw.mine");if(!b)return;e.preventDefault();mySwatches=mySwatches.filter(x=>x!==b.dataset.c);saveSwatches();renderEdit()});
 $("editPanel").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="editLabel"){e.preventDefault();e.target.blur()}});
 $("editPanel").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const it=itemById(selId);if(!it)return;
   if(b.dataset.sw){const k=b.dataset.sw.slice(5);editApply(i=>{i[k]=b.dataset.c});editCommit();renderEdit();return}
@@ -471,11 +498,15 @@ $("editPanel").addEventListener("click",e=>{const b=e.target.closest("button");i
   if(act==="go"){const c=centerOf(it);goTo(c.x,c.y);return}
   if(act==="wp"){const c=it.t==="l"||it.t==="r"?{x:it.pts[1][0],y:it.pts[1][1]}:centerOf(it);setWaypoint(c.x,c.y);return}
   if(act==="dup"){const off=12*2**(5-zoom),copy=JSON.parse(JSON.stringify(it));copy.id=newId();if(copy.pts)copy.pts=copy.pts.map(p=>[p[0]+off,p[1]-off]);else{copy.x+=off;copy.y-=off}const n=addItem(copy);if(n)select(n.id)}});
+function copyItem(it){clip=JSON.parse(JSON.stringify(it));store("mio-map-clip",JSON.stringify(clip));toast(`${itemName(it)}をコピーしました`)}
+function pasteAt(g){if(!clip)return;g=clampG(g);const c=centerOf(clip),dx=g.x-c.x,dy=g.y-c.y,copy=JSON.parse(JSON.stringify(clip));copy.id=newId();
+  if(copy.pts)copy.pts=copy.pts.map(p=>[p[0]+dx,p[1]+dy]);else{copy.x=g.x;copy.y=g.y}
+  const n=addItem(copy);if(n){if(tool!=="select")setTool("select");select(n.id)}}
 function deleteItem(it){mutate(()=>{items=items.filter(x=>x!==it)});toast(`${itemName(it)}を削除しました`)}
 // ---------------------------------------------------------------- list panel
 function renderPinList(){
   const rows=$("pinRows");if(!rows)return;$("pinPreset").textContent=presets.length>1?active.name:"";
-  if(!items.length){rows.innerHTML='<div class="muted">まだ何も書き込んでいません。左のパレットから書き込めます。</div>';return}
+  if(!items.length){rows.innerHTML='<div class="muted">まだありません</div>';return}
   rows.innerHTML=items.map((it,i)=>{const c=centerOf(it),badge=it.t==="m"?`<span class="lic" style="background:${it.color};color:${lumOf(it.color)>.5?"#061018":"#fff"}">${svgOf(it.icon)}</span>`:`<span class="lic" style="background:${it.color}33;box-shadow:inset 0 0 0 2px ${it.color}"></span>`;
     return`<div class="row" data-i="${i}">${badge}<span class="grow">${esc(itemName(it))}${it.label?`<span class="muted"> · ${TYPE[it.t]}</span>`:""}</span><span class="muted">${state.active?dist(distanceTo(c.x,c.y)):""}</span>${cfg.waypoint?'<button class="wpb" data-act="wp" title="ウェイポイントにする"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4M6 4h11l-2.5 4L17 12H6"/></svg></button>':""}<button data-act="del" title="削除">✕</button></div>`}).join("")}
 $("pinRows").addEventListener("click",e=>{const row=e.target.closest(".row");if(!row)return;const it=items[num(row.dataset.i)];if(!it)return;const act=e.target.dataset.act;
@@ -498,7 +529,7 @@ function renderAlerts(){
 }
 function saveState(){active.items=items;active.shown=[...shownSprites];active.show={...show};
   const ok=store("mio-map-presets",JSON.stringify(presets));store("mio-map-preset",active.id);store("mio-map-svc",JSON.stringify({units:show.units,alerts:show.alerts}));
-  if(!ok&&performance.now()-saveWarnAt>8000){saveWarnAt=performance.now();toast("保存できませんでした。ブラウザの保存容量がいっぱいです（書き込みやプリセットを減らしてください）")}
+  if(!ok&&performance.now()-saveWarnAt>8000){saveWarnAt=performance.now();toast("保存できませんでした。ブラウザの保存容量がいっぱいです。書き込みかプリセットを減らしてください")}
   return ok}
 function saveNow(){clearTimeout(saveTimer);saveTimer=0;return saveState()}
 function saveSoon(){clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,400)}
@@ -510,7 +541,7 @@ function renderFilter(){
   const list=[...counts.entries()].sort((a,b)=>b[1]-a[1]||a[0]-b[0]).filter(([s])=>!q||spriteName(s).toLowerCase().includes(q));
   $("spriteList").innerHTML=list.length?list.map(([s,n])=>`<label class="row"><input type="checkbox" data-sprite="${s}" ${shownSprites.has(s)?"checked":""}><img class="ico" data-ico="${s}" alt=""><span class="grow">${esc(spriteName(s))}</span><span class="muted">${n}</span></label>`).join(""):`<div class="muted">${counts.size?"見つかりません":"アイコンを受信すると一覧が出ます"}</div>`;
   for(const c of $("spriteList").querySelectorAll("img[data-ico]"))paintBlip(c,num(c.dataset.ico)|0,"#e8f6fb",20,true);
-  const toggles=[["blips","地図アイコン"],["pins","書き込み"],["loc","現在地（通り名・速度）"]].concat(cfg.services?[["units","同僚の位置"],["alerts","通報の一覧"]]:[]);
+  const toggles=[["blips","地図アイコン"],["pins","書き込み"],["loc","通り名と速度"]].concat(cfg.services?[["units","同僚の位置"],["alerts","通報の一覧"]]:[]);
   $("layerToggles").innerHTML=toggles.map(([k,l])=>`<label class="row"><input type="checkbox" data-show="${k}" ${show[k]?"checked":""}><span class="grow">${l}</span></label>`).join("");
 }
 // "icons are picked in 表示": shown once while nothing is ticked, until closed
@@ -555,7 +586,7 @@ function openMenu(e,it,at,head){
   menuAt=at||(it?centerOf(it):screenToGame(e.clientX,e.clientY));menuItem=it||null;
   $("menuHead").textContent=head||(it?itemName(it):(state.active?`ここまで ${dist(distanceTo(menuAt.x,menuAt.y))}`:`${menuAt.x.toFixed(1)}, ${menuAt.y.toFixed(1)}`));
   $("mWaypoint").hidden=!cfg.waypoint||!gameConnected;$("mClearWp").hidden=!cfg.waypoint||!state.hasWaypoint||!gameConnected;
-  $("mMarker").hidden=!!it||!!head;$("mEdit").hidden=!it;$("mDelItem").hidden=!it;
+  $("mMarker").hidden=!!it||!!head;$("mPaste").hidden=!!it||!!head||!clip;$("mEdit").hidden=!it;$("mDelItem").hidden=!it;
   menu.classList.add("open");const r=menu.getBoundingClientRect();
   menu.style.left=Math.min(e.clientX,innerWidth-r.width-8)+"px";menu.style.top=Math.min(e.clientY,innerHeight-r.height-8)+"px";
 }
@@ -565,6 +596,7 @@ map.addEventListener("contextmenu",e=>{e.preventDefault();if(!gameConnected||!ma
   openMenu(e,tool==="select"?itemAt(e.target):null)});
 $("mWaypoint").onclick=()=>{if(menuAt){const it=menuItem,c=it&&(it.t==="l"||it.t==="r")?{x:it.pts[1][0],y:it.pts[1][1]}:menuAt;setWaypoint(c.x,c.y)}closeMenu()};
 $("mClearWp").onclick=()=>{clearWaypoint();closeMenu()};
+$("mPaste").onclick=()=>{const at=menuAt;closeMenu();if(at)pasteAt(at)};
 $("mMarker").onclick=()=>{const at=menuAt&&clampG(menuAt);closeMenu();if(at){const it=addItem({t:"m",x:at.x,y:at.y,icon:opts.icon,color:opts.color.m,size:opts.size});if(it){select(it.id);focusEditLabel(false)}}};
 $("mEdit").onclick=()=>{const it=menuItem;closeMenu();if(it){setTool("select");select(it.id);focusEditLabel(false)}};
 $("mDelItem").onclick=()=>{const it=menuItem;closeMenu();if(it)deleteItem(it)};
@@ -629,7 +661,7 @@ function openPresetDialog(mode,target){pdMode=mode;pdTarget=target||null;
   const name=$("pdName"),text=$("pdText");name.hidden=mode==="export";text.hidden=mode!=="export"&&mode!=="import";text.readOnly=mode==="export";
   name.value=mode==="ren"?target.name:mode==="dup"?active.name+" のコピー":"";
   text.value=mode==="export"?exportText(active):"";text.placeholder=mode==="import"?"書き出した文字、または座標の一覧を貼り付け\n例）\n-591.7, -287.5 Noir Cafe\nvector3(1138.2, -982.4, 46.4) 素材A":"";
-  $("pdNote").textContent=mode==="export"?`「${active.name}」の書き込み（${items.length}件）と地図アイコンの種類です。この文字を渡すと、相手は「読み込む」で同じものを使えます。`:mode==="import"?"新しいプリセットとして追加します。名前を空にすると書き出し元の名前になります。":mode==="new"?"書き込みは空で、アイコンの種類は今のプリセットと同じから始まります。":"";
+  $("pdNote").textContent=mode==="export"?`「${active.name}」 ${items.length}件`:mode==="import"?"":mode==="new"?"":"";
   $("presetDialog").classList.add("open");setTimeout(()=>{(mode==="export"||mode==="import"?text:name).focus();if(mode==="export")text.select()},30)}
 function closePresetDialog(){$("presetDialog").classList.remove("open");pdMode=null;pdTarget=null}
 function exportText(p){const list=p===active?items:p.items;return JSON.stringify({miomap:2,name:p.name,items:list.map(({id,...rest})=>rest),shown:p===active?[...shownSprites]:p.shown,show:p===active?{...show}:p.show})}
@@ -658,9 +690,14 @@ $("presetNew").onclick=()=>openPresetDialog("new");$("presetDup").onclick=()=>op
 $("presetExport").onclick=()=>{saveState();openPresetDialog("export")};$("presetImport").onclick=()=>openPresetDialog("import");
 $("presetRows").addEventListener("click",e=>{const row=e.target.closest(".row");if(!row)return;const p=presets[num(row.dataset.i)];if(!p)return;const act=e.target.dataset.act;
   if(act==="ren"){openPresetDialog("ren",p);return}
-  if(act==="del"){if(presets.length<2||!confirm(`「${p.name}」を削除しますか？（書き込み${p.items.length}件も消えます）`))return;const i=presets.indexOf(p);presets.splice(i,1);if(p===active){active=null;switchPreset(presets[Math.max(0,i-1)])}else{saveState();renderPresets()}return}
+  if(act==="del"){if(presets.length<2||!confirm(`「${p.name}」を削除しますか？書き込み ${p.items.length}件も消えます`))return;const i=presets.indexOf(p);presets.splice(i,1);if(p===active){active=null;switchPreset(presets[Math.max(0,i-1)])}else{saveState();renderPresets()}return}
   switchPreset(p)});
 // icon size (表示)
+document.querySelectorAll("[data-look-shape]").forEach(b=>{b.onclick=()=>setLook("shape",b.dataset.lookShape)});
+document.querySelectorAll("[data-look-pos]").forEach(b=>{b.onclick=()=>setLook("pos",b.dataset.lookPos)});
+$("lookBg").addEventListener("input",e=>setLook("bg",Math.round(num(e.target.value)/5)/20));
+$("lookWrap").addEventListener("change",e=>setLook("wrap",e.target.checked));
+applyLook();showLook();
 function showIconSize(){$("iconSize").value=Math.round(iconScale*100);$("iconSizeVal").textContent=Math.round(iconScale*100)+"%"}
 $("iconSize").addEventListener("input",e=>{iconScale=Math.max(.6,Math.min(2,num(e.target.value)/100));store("mio-map-iconsize",String(iconScale));showIconSize();blipsDirty=true;itemsDirty=true;render(false)});
 // ---------------------------------------------------------------- keyboard
@@ -674,6 +711,8 @@ addEventListener("keydown",e=>{
   if(drag&&drag.move)return;   // finish the move first
   if(mod&&k==="z"&&!e.shiftKey){e.preventDefault();undo();return}
   if(mod&&(k==="y"||(k==="z"&&e.shiftKey))){e.preventDefault();redo();return}
+  if(mod&&k==="c"&&selId){const it=itemById(selId);if(it){e.preventDefault();copyItem(it)}return}
+  if(mod&&k==="v"&&clip){e.preventDefault();pasteAt(pointerAt?screenToGame(pointerAt.x,pointerAt.y):screenToGame(innerWidth/2,innerHeight/2));return}
   if(mod||e.altKey)return;
   if(e.key==="Enter"&&draft){finishPoly();return}
   if((e.key==="Delete"||e.key==="Backspace")&&selId){const it=itemById(selId);if(it){e.preventDefault();deleteItem(it)}return}
@@ -706,7 +745,7 @@ map.addEventListener("pointerdown",e=>{if(e.button!==0)return;closeMenu();
     // only an item that is already selected moves with the mouse (dragging over an area otherwise pans the map)
     if(was){editCommit();drag={move:true,item:it,x:e.clientX,y:e.clientY,start:screenToGame(e.clientX,e.clientY),orig:JSON.parse(JSON.stringify(it)),before:snapshot(),moved:false};map.setPointerCapture(e.pointerId);return}}
   drag={x:e.clientX,y:e.clientY,center:{...center},moved:false,target:e.target};world.classList.remove("smooth");map.classList.add("dragging");map.setPointerCapture(e.pointerId)});
-map.addEventListener("pointermove",e=>{
+map.addEventListener("pointermove",e=>{pointerAt={x:e.clientX,y:e.clientY};
   const g=screenToGame(e.clientX,e.clientY);$("coords").textContent=`X ${String(Math.round(g.x)).padStart(5)}  Y ${String(Math.round(g.y)).padStart(5)}`;
   if(draft){hoverAt=g;if(!drag||!drag.moved)scheduleDraft()}
   if(!drag)return;if(!drag.moved&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<4)return;drag.moved=true;
@@ -715,7 +754,7 @@ map.addEventListener("pointermove",e=>{
   follow=false;const c=px(drag.center.x,drag.center.y);center=toGame(c.x-(e.clientX-drag.x),c.y-(e.clientY-drag.y));render(false)});
 let itemsFrame=0;function scheduleDraft(){if(!itemsFrame)itemsFrame=requestAnimationFrame(()=>{itemsFrame=0;renderDraft()})}
 let moveFrame=0;function scheduleMove(it){if(!moveFrame)moveFrame=requestAnimationFrame(()=>{moveFrame=0;renderOne(it)})}
-map.addEventListener("pointerleave",()=>{$("coords").textContent="X —    Y —";if(draft){hoverAt=null;scheduleDraft()}});
+map.addEventListener("pointerleave",()=>{pointerAt=null;$("coords").textContent="X —    Y —";if(draft){hoverAt=null;scheduleDraft()}});
 map.addEventListener("pointerup",endDrag);map.addEventListener("pointercancel",()=>endDrag(null));
 let wheelAt=0;
 map.addEventListener("wheel",e=>{e.preventDefault();const now=performance.now();if(now-wheelAt<120)return;wheelAt=now;zoomAt(zoom+(e.deltaY<0?1:-1),e.clientX,e.clientY)},{passive:false});
